@@ -1,0 +1,16 @@
+---
+title: "travail_session_rousseau"
+author: "Camilien Rousseau"
+format: html
+editor: visual
+---
+
+# Introduction
+
+## Problématique de recherche
+
+## Données et méthodes
+
+## Résultats
+
+# Conclusion
