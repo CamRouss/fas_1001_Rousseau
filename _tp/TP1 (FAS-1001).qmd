@@ -6,4 +6,12 @@ editor: visual
 date: 22 janvier 2022
 ---
 
-## 
+![Capture d'ecran](Fas_1001_tp1_gitlog.png)
+
+Tout d'abord je tiens a dire que je ne sais pas si mon log montre tout ce qui devrait y être et ce parce que je ne vois pas de log mentionnant le forkage de votre dossier ou encore de la création de la branch fas_1001_rousseau, quoique c'est indiqué que l'on travail dans cette dernière que je ne me serais pas rendu là sans avoir pu cloner.
+
+Dans la capture d'écran présentée ci-haut, nous voyons différent commit, certains sont les mêmes et représentent différentes tentatives de ma part d'utiliser les commandes git add . ainsi que git commit.
+
+Il y a tout d'abord le commit fait a 21:49 intitulé: Premier commit et représente le premier commit sur la branche **`fas_1001_rousseau`**. Il s'agit du premier commit réalisé dans cette branche, et le message indique que c'est le "Premier commit"
+
+Par la suite il y a le commit de 21:51, qui représente la création d'un nouveau commit dans la branche **`fas_1001_rousseau`**. Le message du commit indique qu'il est lié à la création du document de travail de session.
