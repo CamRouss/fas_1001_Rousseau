@@ -7,7 +7,7 @@ editor: visual
 
 # Introduction
 
-## Problématique de recherche 
+## Problématique de recherche
 
 ## Données et méthodes
 
