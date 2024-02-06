@@ -48,10 +48,10 @@ library(ggplot2)
 # 2 - Données ----
 
 # Éducation: 
-education <- read.csv("C:/Users/rouss/OneDrive - Universite de Montreal/fas_1001_Rousseau/_tp/States.csv")
+education <- read.csv("C:/Users/Camilien/OneDrive - Universite de Montreal/fas_1001_Rousseau/_tp/States.csv")
 
 #GDP par États aux États-Un
-gdp <- readxl::read_xlsx("C:/Users/rouss/OneDrive - Universite de Montreal/fas_1001_Rousseau/_tp/GDP by State 2000 2005 2010 2015 with Share and Growth Rate.xlsx")
+gdp <- readxl::read_xlsx("C:/Users/Camilien/OneDrive - Universite de Montreal/fas_1001_Rousseau/_tp/GDP by State 2000 2005 2010 2015 with Share and Growth Rate.xlsx")
 
 
 # 3 - Nettoyage ----
@@ -97,7 +97,7 @@ donnees_clean <- left_join(gdp_clean, education_clean, by = "Area") %>%
 
 ```
 
-### Graphique: 
+### Graphique:
 
 ![](figures/graph3.png)
 
@@ -209,4 +209,30 @@ ggsave(graph3,
        units = "cm",
        height = 10,
        width = 16)
+```
+
+### Conclusion
+
+L'on peut observer que le PIB des régions n'est que corréler qu'au salaire moyen des enseignants et ce de facon faible, mais statistiquement significative. Cependant, le salaire des enseignants est correler avec les performances des étudiants aux examens SAT, mais a une corrélation négative (faible) avec le score aux SAT verbaux et positif avec ceux mathématique. Donc l'on peut dire que par association, le salaire des enseignants est correler au PIB de l'État et plus ce dernier est grand, meilleur le salaire sera et par conséquent meilleur est le salaire, plus les étudiants auront des bonnes notes aux examens mathématique, mais moins bonne a ceux verbaux.
+
+```{r}
+
+# 6 - Analyse statistique ----
+
+
+# Régression linéaire entre les dépenses en éducation et le PIB:
+model1 <- lm(avg_dollars ~ `2000 ($MM)`, data = donnees_clean)
+
+summary(model1)
+
+# Régression linéaire entre le salaire des enseignants et les performances sur les examens SAT:
+model2 <- lm(avg_pay ~ avg_SATV + avg_SATM, data = donnees_clean)
+
+summary(model2)
+
+#Régression linéaire multiple pour prédire les dépenses en éducation en fonction du PIB, de la population et du salaire moyen des enseignants :
+model3 <- lm(avg_dollars ~ `2000 ($MM)` + avg_pop + avg_pay, data = donnees_clean)
+
+summary(model3)
+
 ```
