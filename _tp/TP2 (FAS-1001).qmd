@@ -17,9 +17,28 @@ Les hypothèses formulées suggèrent des relations complexes entre ces variable
 
 ### Étape 2: Données et méthodes
 
+La base de données "States" que nous avons nommé "education" provient du *Statistical Abstract of the United States of America* (1992) qui se voit être un résumé complet des statistiques de l'organisation sociale, politique et économique des États-Unis. Les données sont prises du Bureau de rescencement, du *Bureau of Labor Statistic, Bureau of Economic Analysis* et plus encore. Cette base de données possèdent 51 rangées (représentant tout les états américains plus Washington DC) et 8 colones représentant les variables suivantes: region, qui est un facteur sur les différentes région américaines : `ENC`, East North Central; `ESC`, East South Central; `MA`, Mid-Atlantic; `MTN`, Mountain; `NE`, New England; `PAC`, Pacific; `SA`, South Atlantic; `WNC`, West North Central; `WSC`, West South Central. Ensuite il y a **pop**, qui représente la population de chaque étant en milliers. Ensuite il y a **SATV**, qui représente la moyenne des scores des étudiants aux examens SAT verbaux (scholastic aptitude test). Après, nous avons **SATM**, qui est la moyenne des scores, mais en mathématique cette fois. Nous enchainons avec **percent** qui s'avère être le pourcentage des étudiatns qui ont fait les examens SAT. Puis, **dollars**, qui représente les dépenses étatiques dans le systèeme d'éducation publique en milliers de dollars par étudiant. Finalement nous avons **pay**, qui représente le salaire moyen des enseignants par état, en milliers de dollars encore une fois.
+
+Par la suite la base de donnnées: GDP by State 2000 2005 2010 2015 with Share and Growth Rate ce voit être une compilation des données du PIB de chaque État américain à quatre moment dans le temps soit 2000, 2005, 2010, 2015 ainsi qu'un évaluation du taux de croissance du PIB entre 2000 et 2015 et ce à l'interne, mais également proprotionnellement au PIB du pays ainsi qu'au pourcentage qu'il représente au sein du PIB national. Les données proviennent du *Bureau of Economic Analysis*.
+
+Dans ce cas ci, nous allons travailler seulement avec les variables qui concerne l'année 2000 étant donné que c'est la période la plus proche de nos observations de l'autre base de données, mais pour ce faire nous devons procéder a du nettoyage.
+
+##### Information sur le nettoyage:
+
+Tout d'abord ont importe les packages nécessaires ainsi que les bases de données. Puis nous allons créer un vecteur "région_garder" qui contient les noms des régions que nous souhaitons conserver dans nos données finales, puisque nous allons les évaluer selon les grandes régions américaines plutot que les 50 États, par soucis de temps.
+
+Par la suite, on prend l'ensemble des données "gdp" et on le filtre pour inclure uniquement les régions spécifiées dans "région_garder". Ensuite, on sélectionne uniquement les colonnes "Area", "2000 (\$MM)", et "2000 % of Total" de ces régions. Puis nous allons enregistrer le tout dans une nouvelle base de données appelée: "gdp_clean".
+
+Par la suite, pour le nettoyage de la base de données "education", On modifie l'ensemble de données "education" en créant une nouvelle colonne "Area" basée sur les conditions spécifiées dans `case_when()`. Ensuite, on groupe les données par la nouvelle colonne "Area" et on calcule les moyennes de différentes variables avec `summarise()`. Ce qui nous permet de regrouper les régions de la base de données "education" dans les mêmes catégories que celles du "gdp" et ne pas se retrouver avec une catégorie en plus qui n'aurait pas de données. Nous enregistrons les modifications dans une nouvelle base de données appelée: "education_clean".
+
+Finalement on fusionne les données, en effectuant une jointure à gauche (`left_join`) entre les ensembles de données "gdp_clean" et `education_clean` en utilisant la colonne "Area" comme clé de jointure. Cela crée un ensemble de données combinant les informations de ces deux ensembles. Ensuite, `na.omit()` supprime les lignes contenant des valeurs manquantes dans l'ensemble de données résultant de la jointure.
+
+Le résultat final, "donnees_clean, est un ensemble de données combinant les informations économiques (`gdp_clean`) et éducatives (`education_clean`) pour les régions spécifiées, avec les valeurs manquantes éliminées.
+
 ```{r}
 
 # 1 - librairies ----
+
 #install.packages("tidyverse")
 library(tidyverse)
 #install.packages("ggplot2")
@@ -29,42 +48,23 @@ library(ggplot2)
 # 2 - Données ----
 
 # Éducation: 
-education <- read.csv("States.csv")
+education <- read.csv("C:/Users/rouss/OneDrive - Universite de Montreal/fas_1001_Rousseau/_tp/States.csv")
 
 #GDP par États aux États-Un
-gdp <- readxl::read_xlsx("GDP by State 2000 2005 2010 2015 with Share and Growth Rate.xlsx")
+gdp <- readxl::read_xlsx("C:/Users/rouss/OneDrive - Universite de Montreal/fas_1001_Rousseau/_tp/GDP by State 2000 2005 2010 2015 with Share and Growth Rate.xlsx")
 
-class(gdp$region)
+
 # 3 - Nettoyage ----
+
 ## 3.1 Nettoyage de la base de données "gdp"
+
 region_garder <- c("New England", "Mideast", "Great Lakes", "Plains", "Southeast", "Southwest", "Rocky Mountain", "Far West")
 
 gdp_clean <- gdp %>% 
   filter(Area %in% region_garder) %>% 
   select(Area, `2000 ($MM)`, `2000 % of Total`) #2000 pcq educ = 1992 donc plus proche
 
-##3.2 Nettoyage de la base de données "education"
-
-#education_clean <- education %>% 
-#  group_by(region) %>% 
-#  summarise(
-#    avg_pop = mean(pop),
-#    avg_SATV = mean(SATV),
-#    avg_SATM = mean(SATM),
-#    avg_percent = mean(percent),
-#    avg_dollars = mean(dollars),
-#    avg_pay = mean(pay)) %>% 
-#  mutate(Are = case_when(
-#    region %in% c("NE") ~ "New England",
-#    region %in% c("MA") ~ "Mideast",
-#    region %in% c("ENC") ~ "Great Lakes",
-#    region %in% c("WNC") ~ "Plains",
-#    region %in% c("SA", "ESC") ~ "Southeast",
-#    region %in% c("WSC") ~ "Southwest",
-#    region %in% c("MTN") ~ "Rocky Mountains",
-#    region %in% c("PAC") ~ "Far West",
-#    TRUE ~ as.character(region)
-#  ))
+## 3.2 Nettoyage de la base de données "education"
 
 education_clean <- education %>% 
   mutate(Area = case_when(
@@ -87,11 +87,25 @@ education_clean <- education %>%
     avg_dollars = mean(dollars),
     avg_pay = mean(pay)
   )
+
+
 # 4 Fusion des données ----
 
-donnees_clean <- left_join(gdp_clean, education_clean, by = "Area")
+donnees_clean <- left_join(gdp_clean, education_clean, by = "Area") %>% 
+  na.omit()
 
-# 5 Analyse de données ----
+
+```
+
+### Graphique: 
+
+![](figures/graph3.png)
+
+#### Code pour les graphiques de croisement
+
+```{r}
+
+# 5 Visualisation ----
 
 # Diagramme à barres pour comparer les moyennes de la population par région
 barplot_pib <- ggplot(donnees_clean, aes(x = Area, y = `2000 ($MM)`)) +
@@ -107,8 +121,92 @@ barplot_pib
 # Diagramme à barres pour les dépenses en éducation par région
 barplot_dep <- ggplot(donnees_clean, aes(x = Area, y = avg_dollars)) +
   geom_bar(stat = "identity", fill = "skyblue") +
-  labs(title = "Moyenne des Dépenses en Éducation par Région",
-       x = "Région", y = "Dépenses en Éducation (en milliers de $)")
-barplot_dep
+  labs(title = "Moyenne des dépenses en éducation par région",
+       x = "Région", y = "Dépenses en éducation (en 1000 $ par étudiant)")+
+  theme_minimal() +
+  theme(axis.line = element_line(colour = "black"))
+print(barplot_dep)
 
+#ggsave(barplot_dep, 
+#       filename = "figures/barplot_dep.png", 
+#       dpi = 320,
+#       bg = "white",
+#       units = "cm",
+#       height = 10,
+#       width = 16)
+
+#Diagramme a bars pour la corrélation entre le salaire moyen des enseignants et les performances aux examens SAT: 
+barplot_sal_perfo <- ggplot(donnees_clean, aes(x = Area, y = avg_pay)) +
+  geom_bar(stat = "summary", fun = "mean", fill = "skyblue") +
+  labs(title = "Moyenne du salaire moyen des enseignants par région",
+       x = "Région", y = "Salaire moyen des enseignants (en milliers de dollars)")+
+  theme_minimal() +
+  theme(axis.line = element_line(colour = "black"))
+
+print(barplot_sal_perfo)
+
+#ggsave(barplot_sal_perfo, 
+#       filename = "figures/barplot_sal_perfo.png", 
+#       dpi = 320,
+#       bg = "white",
+#       units = "cm",
+#       height = 10,
+#       width = 16)
+
+#Nuage de points pourla relation entre le PIB et les dépenses en éducation
+graph1 <- ggplot(donnees_clean, aes(x = `2000 ($MM)`, y = avg_dollars, color = Area)) +
+  geom_point() +
+  labs(title = "Relation entre le GDP et les dépenses en éducation par région",
+       x = "GDP (en millions de dollars)", y = "Dépenses en éducation (1000$ par étudiant)") +
+  theme_minimal()+
+  theme(axis.line = element_line(colour = "black"))
+
+print(graph1)
+
+#ggsave(graph1, 
+#       filename = "figures/graph1.png", 
+#       dpi = 320,
+#       bg = "white",
+#       units = "cm",
+#       height = 10,
+#       width = 16)
+
+#Salaire moyen des enseignants par région 
+graph2 <- ggplot(donnees_clean, aes(x = `2000 ($MM)`, y = avg_pay, color = Area)) +
+  geom_point() +
+  labs(title = "Relation entre le GDP et le salaire moyen des enseignants par région",
+       x = "GDP (en millions de dollars)", y = "Salaire moyen des enseignants (en milliers de dollars)") +
+  theme_minimal()+
+  theme(axis.line = element_line(colour = "black"))
+
+print(graph2)
+
+#ggsave(graph2, 
+#       filename = "figures/graph2.png", 
+#       dpi = 320,
+#       bg = "white",
+#       units = "cm",
+#       height = 10,
+#       width = 16)
+
+
+#Performance des étudiants au SAT par région :
+graph3 <- ggplot(donnees_clean, aes(x = `2000 ($MM)`, y = avg_SATV, color = Area))+
+  geom_point() +
+  labs(title = "Relation entre le GDP et la Performance au SAT par Région",
+       x = "GDP (en millions de dollars)", y = "Scores SAT") +
+  geom_smooth(aes(group = 1), method = 'loess', formula = y ~ x, se = FALSE, color = "black") +
+  theme_minimal() +
+  theme(axis.line = element_line(colour = "black"))
+
+
+print(graph3)
+
+ggsave(graph3, 
+       filename = "figures/graph3.png", 
+       dpi = 320,
+       bg = "white",
+       units = "cm",
+       height = 10,
+       width = 16)
 ```
