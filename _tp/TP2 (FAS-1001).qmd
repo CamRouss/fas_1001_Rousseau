@@ -1,0 +1,114 @@
+---
+title: "Fas1001_Rousseau_tp2"
+author: "Camilien Rousseau"
+format: html
+editor: visual
+---
+
+### Étape 1: introduction
+
+L'éducation et l'économie sont deux piliers essentiels du développement sociétal, et leur interrelation peut offrir des perspectives précieuses pour comprendre les dynamiques régionales. Cette étude vise à explorer les liens entre les dépenses publiques en éducation, les salaires moyens des enseignants, les performances des étudiants aux examens SAT (Scholastic Aptitude Test), et les indicateurs économiques, tels que le produit intérieur brut (PIB), à travers différentes régions des États-Unis.
+
+Les variables en jeu, telles que les scores SAT, les dépenses publiques par étudiant, les salaires des enseignants, et le PIB, sont des éléments clés qui influent sur la qualité du système éducatif et sur le dynamisme économique d'une région. Cette analyse s'attardera sur la diversité des régions définies par le recensement américain, examinant les particularités de tout les états américains, en croisant les données deux base de données
+
+Les hypothèses formulées suggèrent des relations complexes entre ces variables. Par exemple, des dépenses éducatives plus élevées pourraient être associées à des performances étudiantes supérieures, et la participation des étudiants aux examens SAT pourrait refléter la prospérité économique de chaque région. Ce travail ambitionne également de déceler d'éventuelles variations régionales dans ces relations, apportant ainsi des éclairages pertinents pour les décideurs politiques et les acteurs de l'éducation.
+
+À travers une analyse des données collectées auprès des 50 États américains, cette recherche aspire à fournir des perspectives cruciales pour optimiser l'allocation des ressources éducatives, tout en éclairant les débats sur les disparités régionales et les moyens de favoriser le développement équilibré à travers le pays.
+
+### Étape 2: Données et méthodes
+
+```{r}
+
+# 1 - librairies ----
+#install.packages("tidyverse")
+library(tidyverse)
+#install.packages("ggplot2")
+library(ggplot2)
+
+
+# 2 - Données ----
+
+# Éducation: 
+education <- read.csv("States.csv")
+
+#GDP par États aux États-Un
+gdp <- readxl::read_xlsx("GDP by State 2000 2005 2010 2015 with Share and Growth Rate.xlsx")
+
+class(gdp$region)
+# 3 - Nettoyage ----
+## 3.1 Nettoyage de la base de données "gdp"
+region_garder <- c("New England", "Mideast", "Great Lakes", "Plains", "Southeast", "Southwest", "Rocky Mountain", "Far West")
+
+gdp_clean <- gdp %>% 
+  filter(Area %in% region_garder) %>% 
+  select(Area, `2000 ($MM)`, `2000 % of Total`) #2000 pcq educ = 1992 donc plus proche
+
+##3.2 Nettoyage de la base de données "education"
+
+#education_clean <- education %>% 
+#  group_by(region) %>% 
+#  summarise(
+#    avg_pop = mean(pop),
+#    avg_SATV = mean(SATV),
+#    avg_SATM = mean(SATM),
+#    avg_percent = mean(percent),
+#    avg_dollars = mean(dollars),
+#    avg_pay = mean(pay)) %>% 
+#  mutate(Are = case_when(
+#    region %in% c("NE") ~ "New England",
+#    region %in% c("MA") ~ "Mideast",
+#    region %in% c("ENC") ~ "Great Lakes",
+#    region %in% c("WNC") ~ "Plains",
+#    region %in% c("SA", "ESC") ~ "Southeast",
+#    region %in% c("WSC") ~ "Southwest",
+#    region %in% c("MTN") ~ "Rocky Mountains",
+#    region %in% c("PAC") ~ "Far West",
+#    TRUE ~ as.character(region)
+#  ))
+
+education_clean <- education %>% 
+  mutate(Area = case_when(
+    region %in% c("NE") ~ "New England",
+    region %in% c("MA") ~ "Mideast",
+    region %in% c("ENC") ~ "Great Lakes",
+    region %in% c("WNC") ~ "Plains",
+    region %in% c("SA", "ESC") ~ "Southeast",  # Regrouper SA et ESC ensemble
+    region %in% c("WSC") ~ "Southwest",
+    region %in% c("MTN") ~ "Rocky Mountains",
+    region %in% c("PAC") ~ "Far West",
+    TRUE ~ as.character(region)
+  )) %>%
+  group_by(Area) %>% 
+  summarise(
+    avg_pop = mean(pop),
+    avg_SATV = mean(SATV),
+    avg_SATM = mean(SATM),
+    avg_percent = mean(percent),
+    avg_dollars = mean(dollars),
+    avg_pay = mean(pay)
+  )
+# 4 Fusion des données ----
+
+donnees_clean <- left_join(gdp_clean, education_clean, by = "Area")
+
+# 5 Analyse de données ----
+
+# Diagramme à barres pour comparer les moyennes de la population par région
+barplot_pib <- ggplot(donnees_clean, aes(x = Area, y = `2000 ($MM)`)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  labs(title = "Comparaison du PIB par région",
+       x = "Région",
+       y = "Produit intérieur brut") +
+  theme_minimal()
+
+barplot_pib
+
+
+# Diagramme à barres pour les dépenses en éducation par région
+barplot_dep <- ggplot(donnees_clean, aes(x = Area, y = avg_dollars)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  labs(title = "Moyenne des Dépenses en Éducation par Région",
+       x = "Région", y = "Dépenses en Éducation (en milliers de $)")
+barplot_dep
+
+```
