@@ -1,0 +1,141 @@
+### 1. Introduction
+
+L'élection fédérale canadienne de 2015 a été une période de changement politique significatif, marquée par l'arrivée au pouvoir du Parti libéral après près d'une décennie de gouvernement conservateur. Dans le cadre de cette étude, nous nous intéressons au Parti Vert du Canada et examinons comment ses priorités et ses préoccupations ont été exprimées dans les débats parlementaires pendant la campagne électorale de 2015. Notre objectif est d'identifier les principaux thèmes et enjeux abordés par les membres du Parti Vert pendant cette période et d'analyser comment ces thèmes ont été articulés dans le contexte de l'élection.
+
+Pour répondre à cette question de recherche, nous utilisons le jeu de données du Hansard canadien, qui contient les transcriptions officielles des débats parlementaires. Nous nous concentrons spécifiquement sur les discours prononcés par les membres du Parti Vert à la Chambre des communes du Canada pendant la période électorale de 2015. En analysant les discours du Parti Vert, nous cherchons à comprendre comment le parti a positionné ses priorités environnementales et ses politiques dans le contexte de l'élection, ainsi que les stratégies de communication et les messages clés utilisés pour mobiliser les électeurs.
+
+Cette analyse nous permettra de mieux comprendre le rôle du Parti Vert du Canada dans le débat politique de 2015 et son impact sur les enjeux environnementaux au Canada. Elle fournira également des insights précieux sur la manière dont les partis politiques adaptent leurs discours et leurs priorités en fonction des contextes électoraux et des préoccupations du public.
+
+### 2. Section sur les données
+
+Les données utilisées dans cette analyse sont extraites des discours de la chef du Parti vert du Canada, Elizabeth May, lors de l'élection fédérale canadienne de 2015. Les discours ont été transcrits à partir des archives de la Chambre des communes du Canada et sont disponibles sous forme de fichiers CSV organisés par année et mois.
+
+Avant d'analyser les discours, plusieurs étapes de nettoyage des données ont été effectuées. Tout d'abord, le texte des discours a été converti en minuscules pour normaliser le texte. Ensuite, le corpus a été divisé par phrases et par mots pour faciliter l'analyse. Les stopwords, c'est-à-dire les mots courants qui n'apportent pas de sens particulier, ont été retirés pour ne conserver que les mots pertinents. Ces étapes de nettoyage ont permis de préparer les données textuelles pour l'analyse.
+
+**Dictionnaire lexicoder**
+
+Pour analyser les discours d'Elizabeth May, nous avons utilisé le dictionnaire lexicoder développé par Young et Soroka (2012). Ce dictionnaire permet de coder automatiquement les mots en catégories thématiques spécifiques. Nous avons choisi ce dictionnaire en raison de sa spécificité aux enjeux politiques et de son application pertinente aux discours politiques d'Elizabeth May.
+
+Le dictionnaire lexicoder a été utilisé pour attribuer des catégories à chaque mot dans les discours de la chef du Parti vert. Les catégories thématiques comprennent des sujets tels que l'économie, la santé, l'environnement, la foresterie, l'agriculture, les pêches et l'énergie. L'analyse du dictionnaire nous a permis de mieux comprendre les thèmes politiques abordés par Elizabeth May dans ses discours en 2015.
+
+#### Nettoyage des données
+
+Le code commence par définir les chemins des fichiers CSV contenant les discours de l'année 2015 pour le Parti vert du Canada, ainsi que les dossiers correspondant à chaque mois de cette année. Ensuite, il importe tous ces fichiers CSV dans une seule base de données (**`data_2015`**), ce qui permet d'avoir l'ensemble des discours de l'année 2015 dans un seul ensemble de données.
+
+En parallèle, le code charge un dictionnaire spécifique appelé lexicoder, qui contient des catégories de mots sur différents enjeux politiques. Ce dictionnaire sera utilisé pour analyser les discours et identifier les sujets abordés par la chef du Parti vert, Elizabeth May.
+
+Les données des discours sont ensuite nettoyées en filtrant uniquement les discours d'Elizabeth May et en conservant les colonnes pertinentes comme la date du discours, le sujet principal, le sous-sujet et le texte du discours. Le texte des discours est converti en minuscules pour une analyse uniforme.
+
+La partie principale du code effectue l'analyse du dictionnaire sur les discours d'Elizabeth May. Pour chaque discours, la fonction **`run_dictionary`** est utilisée pour identifier les catégories de mots pertinentes et calculer la fréquence des mots dans chaque catégorie. Ces données sont ensuite regroupées par date du discours, sous-sujet et catégorie de mots, puis la fréquence est convertie en proportion en pourcentage.
+
+Enfin, les données sont filtrées pour ne conserver que les catégories de mots spécifiques comme "macroéconomie", "santé", "environnement", etc. Ces données nettoyées et analysées (**`ana_speech_green`**) peuvent ensuite être utilisées pour créer des visualisations et des analyses plus approfondies sur les sujets abordés par Elizabeth May dans ses discours en 2015.
+
+```{r}
+# 0.1 - Libraries ----
+#install.packages("crayon")
+library(crayon) # couleur du code
+#install.packages("quanteda")
+library(quanteda) # Package pour faire des analyses textuelles
+#devtools::install_github("clessn/clessnverse")
+library(clessnverse) # package avec la fonction pour rouler des dictionnaires
+#install.packages("tidyverse")
+suppressMessages(library(tidyverse)) # Data wrangling
+library(readr)
+library(dplyr)
+
+
+# 0.2 - Données ----
+chemin_annee_2015 <- "C:/Users/Camilien/OneDrive - Universite de Montreal/fas_1001_Rousseau/_tp/data/lipadcsv-1.1.0/lipad/2015"
+
+dossiers_mois_2015 <- list.dirs(chemin_annee_2015, full.names = TRUE, recursive = 
+                                  FALSE)
+# Initialisez une liste vide pour stocker les fichiers CSV de chaque mois
+fichiers_mois_2015 <- list()
+
+# Parcourez chaque dossier mois et obtenez la liste des fichiers CSV
+fichiers_tous_mois <- list.files(chemin_annee_2015, pattern = "\\.csv$", recursive = TRUE, full.names = TRUE)
+
+
+
+# Importer les données:
+
+# Importez tous les fichiers CSV dans une seule base de données
+data_2015 <- do.call(rbind, lapply(fichiers_tous_mois, read.csv))
+
+#View(data_2015)
+
+# Dictionnaire 
+
+lexicoder <- dictionary(file = "C:/Users/Camilien/OneDrive - Universite de Montreal/fas_1001_Rousseau/dictionnary/policy_agendas_english.lcd", format = "yoshikoder")
+
+
+# 2 - Nettoyage des données ----
+
+green_party_speeches <- data_2015 %>%
+  filter(speakerparty == "Green", speakername == "Elizabeth May") %>%
+  select(speechdate, speakername, maintopic, subtopic, speechtext) %>%
+  mutate(
+    speechtext = tolower(speechtext)
+  ) %>% 
+  na.omit()
+
+
+# Analyse du dictionnaire par sujet 
+
+ana_speech_green <- run_dictionary(data = green_party_speeches,
+                                   text = speechtext,
+                                   dictionary = lexicoder) %>% 
+  bind_cols(green_party_speeches) %>% 
+  select(-c(doc_id, speechtext)) %>% 
+  pivot_longer(cols = -c(speechdate, maintopic, subtopic, speakername), names_to = "categorie", values_to = "n") %>% 
+  ungroup() %>% 
+  na.omit() %>% 
+  group_by(speechdate, subtopic, categorie) %>% 
+  summarise(n = sum(n)) %>% 
+  mutate(prop = round((n/sum(n)) * 100, 4)) %>% 
+  filter(categorie %in% c("macroeconomics","healthcare", "environment", "forestry", "energy"))
+
+
+
+
+```
+
+### 3. Présentation des résulats
+
+L'analyse de dictionnaire effectuée nous permet de constater que certains sujets ont été plus présents que d'autres dans les discours d'Elizabeth May au cours de l'année 2015. En effet, comme le montrent les graphiques ci-dessous, le sujet de l'économie ("macroeconomics") semble avoir été le plus abordé, ayant été mentionné environ 100 fois au cours de l'année, soit près de deux fois plus que le deuxième sujet le plus fréquent, celui de l'énergie. Pour présenter ces données, nous proposons deux graphiques distincts. Le premier illustre les proportions des sujets les plus mentionnés selon les jours où la chef du Parti Vert a prononcé des discours devant la Chambre des communes. Le second montre la fréquence totale des différents sujets tout au long de l'année 2015.
+
+Ces résultats nous permettent également d'émettre quelques critiques concernant l'analyse précédente. Tout d'abord, celle-ci a été réalisée uniquement sur une seule députée du parti. Pour une analyse plus complète, nous aurions pu inclure l'autre député pour regrouper les données des deux. De plus, les bases de données utilisées ne contiennent pas d'informations pour les mois de juillet et août, ce qui est particulièrement important car ce sont les deux mois précédant le lancement de la campagne électorale fédérale canadienne de 2015. Ces lacunes pourraient expliquer certains résultats ou même un manque de résultats.
+
+```{r}
+# 4 - Visualisation ----
+## Graphique 1: 
+library(lubridate)
+library(ggplot2)
+
+ana_speech_green$speechdate <- ymd(ana_speech_green$speechdate)
+
+ggplot(ana_speech_green, aes(x = speechdate, y = prop, fill = categorie)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Évolution des catégories de mots populaires au fil du temps",
+       x = "Date du discours",
+       y = "Proportion (%)",
+       fill = "Sujets") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  guides(fill = guide_legend(title = "Catégorie de mots")) +
+  scale_x_date(date_labels = "%m/%Y", date_breaks = "1 month")
+
+## Graphique 2: 
+# Trier les données par fréquence décroissante
+ana_speech_green_sorted <- ana_speech_green %>%
+  arrange(desc(n))
+
+# Créer le graphique en barres horizontales
+ggplot(ana_speech_green_sorted, aes(x = n, y = reorder(categorie, n))) +
+  geom_bar(stat = "identity", fill = "#69b3a2") +
+  labs(title = "Fréquence de mention des sujets",
+       x = "Fréquence",
+       y = "Sujets") +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 8)) 
+```

@@ -1,0 +1,57 @@
+---
+title: "Fas1001_Notes"
+author: "Rous_Cami"
+date: "2024-02-06"
+output: html_document
+---
+
+Cours 5 : 6 février 2024
+
+```{r}
+#install.packages("tm")
+library(tm)
+install.packages("textshape")
+library(textshape)
+#install.packages("quanteda")
+#install.packages("LibPath")
+library(quanteda)
+
+#install.packages("tidytext")
+library(tidytext)
+
+#install.packages("tidyverse")
+library(tidyverse)
+
+#install.packages("SnowballC")
+library(SnowballC)
+```
+
+Lemmatizing vs Stemming (racinisation)
+- petit exemple de texxhniques qui permettent une réduciton des dimensions d'un texte
+```{r}
+# Lemmatizing
+lemmatize_words(c("driver", "drivers", 'drive', 'drove', 'driven', 'drives'))
+
+# stemming en anglais
+wordStem(c("driver", "drivers", 'drive', 'drove', 'driven', 'drives'))
+
+# Vecteur en francais
+words_vector <- c("toilette", "toilettais", "toilettâmes", "toilettions", "toiletteriez")
+
+wordStem(words_vector, language = "french")
+
+```
+
+Les stop Words:
+```{r}
+
+devtools::install_github("clessn/clessnverse", force = T)
+
+library(clessnverse)
+
+lexicoder <- dictionary(file = "dictionnary/policy_agendas_english.lcd", format = "yoshikoder")
+
+View(lexicoder)
+
+```
+
