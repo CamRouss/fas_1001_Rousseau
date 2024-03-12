@@ -1,0 +1,112 @@
+---
+title: "fas1001_Plan_Rousseau"
+format: html
+editor: visual
+---
+
+#### Librairies & Packages:
+
+```{r}
+# Librairies & Packages:
+#install.packages("tidyverse")
+suppressMessages(library(tidyverse))
+#install.packages("ggplot2")
+library(ggplot2)
+```
+
+## 1 - Question de recherche et raisons motivant cette dernière.
+
+Quel est l'impact de l'activité physique sur la santé et le niveau d'éducation dans la population des États-Unis?
+
+Voici plusieurs raisons qui motivent se choix de sujet:
+
+1.  **Intérêt personnel** : En tant qu'étudiant athlète passionné par l'activité physique, cette question permet d'explorer un sujet qui me concerne directement, ce qui peut rendre la recherche plus motivante et significative. De plus, étant un étudiant en science politique, il s'agit d'une oppotunité de joindre des loisirs et passions a mon sujet d'étude, quelque chose que je n'ai pas vraiment eu la chance de faire a cette ampleure auparavant dans mon cheminement académique.
+
+2.  **Impact potentiel** : Comprendre la relation entre le niveau d'éducation, l'activité physique et la santé chez les étudiants athlètes peut avoir un impact important sur la promotion de modes de vie sains et l'amélioration des performances académiques et sportives.
+
+3.  **Portée large** : En examinant l'impact de l'activité physique sur la santé et le niveau d'éducation dans la population des États-Unis, cette étude pourrait avoir des implications pour la santé publique à l'échelle nationale.
+
+4.  **Compréhension globale** : Cette question permet d'explorer comment l'activité physique peut influencer à la fois la santé et le niveau d'éducation, offrant ainsi une vision globale de son importance pour le bien-être global des individus.
+
+5.  **Politiques publiques** : Les résultats de cette recherche pourraient être utilisés pour informer les politiques publiques visant à promouvoir l'activité physique et à améliorer la santé et le niveau d'éducation de la population.
+
+6.  **Comparaison entre groupes** : Vous pourriez également envisager de comparer les effets de l'activité physique sur la santé et le niveau d'éducation entre différents groupes démographiques, ce qui pourrait mettre en lumière des disparités et des facteurs de risque potentiels
+
+## 2 - Données et Méthodes d'analyse:
+
+### Données:
+
+Une partie des données qui sera utilisée provient du Behavioral Risk Factor Surveillance System (BRFSS) un système de surveillance des facteurs de risque comportementaux. Il s'agit d'une enquête téléphonique menée chaque année aux États-Unis par les Centers for Disease Control and Prevention (CDC) pour collecter des informations sur les comportements liés à la santé de la population, tels que le tabagisme, la consommation d'alcool, l'activité physique, l'alimentation, l'utilisation de la ceinture de sécurité, etc. Les données recueillies par le BRFSS sont utilisées pour surveiller les tendances des comportements à risque, planifier et évaluer les programmes de santé publique, et orienter les politiques de santé.
+
+les variables qui nous intréssent vont comme suit: L'année de début de l'étude, représentée par la variable YearStart, permet d'identifier quand les données ont été collectées. La variable Data_Value indique les valeurs des données, exprimées en pourcentage, qui représentent les niveaux d'activité physique, de santé ou de niveau d'éducation. La variable LocationDesc fournit une description de l'emplacement, permettant d'identifier les lieux où les données ont été collectées. La variable Question décrit la question posée dans l'enquête, définissant ainsi le sujet de l'étude. Les variables StratificationCategory1 et Stratification1 sont utilisées pour regrouper les données selon différentes caractéristiques, telles que le groupe d'âge ou le sexe. La variable Sample_Size indique la taille de l'échantillon, permettant d'évaluer la fiabilité des estimations basées sur les données. En outre, les variables Income, Race/Ethnicity et Gender sont utilisées pour évaluer l'impact du revenu, de l'origine ethnique et du genre sur les niveaux d'activité physique, de santé et de niveau d'éducation, respectivement. Ces variables sont essentielles pour comprendre les résultats de l'étude et évaluer les différences entre les groupes.
+
+Une autre partie des données provient du département d'éducation du gouvernement des États-Unis et donné en open source. Les données utilisées comprennent plusieurs variables importantes. La variable "state" représente l'état dans lequel les données ont été collectées, fournissant ainsi des informations sur la région étudiée. La variable "region" fournit des détails supplémentaires sur la région géographique à laquelle appartient l'état. La variable "state_median_income" indique le revenu médian de l'état, offrant ainsi un aperçu de la situation économique générale de la région. La variable "state_income_percentile" indique le percentile du revenu de l'état par rapport aux autres états, ce qui permet de comparer le niveau de revenu de l'état avec celui des autres régions. La variable "state_proportion_with_bachelors_or_higher" représente la proportion de personnes dans l'état ayant un diplôme de bachelier ou un niveau d'éducation plus élevé, ce qui peut être un indicateur de la qualité de l'éducation dans la région. Les variables "total_colleges_within_25km_of_state_counties", "total_colleges_within_50km_of_state_counties", "total_colleges_within_75km_of_state_counties" et "total_colleges_within_100km_of_state_counties" indiquent le nombre total de collèges situés à différentes distances des comtés de l'état, ce qui peut être utile pour évaluer l'accessibilité à l'éducation supérieure dans la région. Ces variables sont cruciales pour comprendre la relation entre le niveau de revenu, le niveau d'éducation et l'accessibilité à l'éducation supérieure dans chaque état.
+
+Une troisième base de données provenant de la même source que la deuxième nous offre des données sur la démographie de la population américaine, selon les États ainsi que sur trois années (2017, 2018, 2019), ce qui nous indique comment filtrer ou nettoyer nos donner selon les dates, questions que nos analyses futures soient pertinentes et précises.
+
+```{r}
+
+Physical_act <- read.csv("Nutrition__Physical_Activity__and_Obesity_-_Behavioral_Risk_Factor_Surveillance_System.csv")
+
+View(Physical_act)
+
+Education <- readxl::read_xlsx("State - Income, Education Level by State.xlsx")
+
+View(Education)
+
+pop_state <- readxl::read_xlsx("State - State Level Population by Race, Ethnicity 2017-2019.xlsx")
+
+View(pop_state)
+```
+
+### Méthodes d'analyse
+
+Le but de l'analyse des données et d'essayer de voir s'il y a une relation entre le niveau d'activité physique et de santé et le niveau d'éducation de la population des États-Unis. Pour se faire nous allons procéder a des analyse statistiques afin de démontrer que notre hypothèse selon laquelle, les États américains où le niveau d'activité physique est le plus élevé auront également le plus haut niveau d'éducation en pourcentage.
+
+1.  **Analyse descriptives** : Pour décrire les caractéristiques de la population étudiée en termes d'activité physique, de santé et de niveau d'éducation, en utilisant des statistiques descriptives telles que les moyennes, les médianes et les écarts-types.
+
+2.  **Analyse de corrélation** : Pour examiner les relations entre l'activité physique, la santé et le niveau d'éducation, en utilisant des techniques telles que la corrélation de Pearson ou de Spearman pour mesurer les associations entre les variables.
+
+3.  **Régression linéaire** : Pour étudier comment l'activité physique influence la santé et le niveau d'éducation, en contrôlant les variables confondantes potentielles.
+
+4.  **Analyse de variance (ANOVA)** : Pour comparer les niveaux de santé et de niveau d'éducation entre différents groupes en fonction de leur niveau d'activité physique
+
+Vos conseils sont le bienvenue sur quels types d'analyse je devrais faire!
+
+#### Nettoyage des données:
+
+```{r}
+# Nettoyage de données de la banque de pour l'activité physique:
+physical_act_clean <- Physical_act %>% 
+  filter(YearStart %in% c(2017, 2018, 2019)) %>%
+  select(LocationDesc, Question, YearStart, Data_Value, Data_Value_Alt,
+         StratificationCategory1, Stratification1, Sample_Size, Income, 
+         Race.Ethnicity, Gender, Education) %>% 
+  drop_na()
+
+
+
+#Nettoyage de la banque de données d'éducation:
+education_clean <- Education %>% 
+  select(-region, -state_income_percentile)
+
+#Nettoyage de la banque de données sur la population:
+pop_state_clean <- pop_state %>% 
+  select(-contains("non"))
+```
+
+Beaucoup d'autre manipulation de nettoyage doivent être effectuées dans cette base de données, surtout autour des question écrites et de leur signification. Du genre où il faut regrouper ensemble les questions qui parlent d'activité physique pour les placer de façon catégorielle pour ainsi déterminer les différents niveaux d'activité physique mentionné ainsi que de les quantifier, une chose très importante si nous sommes pour comparer les États entre eux selon leur niveau d'activité physique. Pour ce faire, je proccéderais un filtre et un mutate pour que les créer une nouvelle colonne a chaque itération des question pertinentes.
+
+Il en est de même pour les niveaux d'obésité, soit les classés en les comptant comme étant des vecteurs de non-activité physique ou un manquement de. Ou encore de les retirer carrément parce qu'ils ne sont pas directement liées au sujet d'étude.
+
+## 3 - Visualisation: 
+
+Pour accompagner l'analyse nous allons représenter quelques résultats sous la forme de graphique.
+
+1.  **Diagramme en barres** : Pour comparer les niveaux d'activité physique, de santé et de niveau d'éducation entre différents groupes ou états.
+
+2.  **Diagramme à secteurs** : Pour montrer la répartition des différents niveaux d'activité physique, de santé et de niveau d'éducation dans la population.
+
+3.  **Graphique en boîte** : Pour visualiser la distribution des données et mettre en évidence les valeurs aberrantes ou les différences entre les groupes.
+
+4.  **Diagramme en nuages de points** : Pour illustrer les relations entre l'activité physique, la santé et le niveau d'éducation, en utilisant différentes couleurs ou formes pour représenter les différents groupes

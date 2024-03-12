@@ -55,3 +55,6 @@ View(lexicoder)
 
 ```
 
+# Cours 7 : 
+
+
