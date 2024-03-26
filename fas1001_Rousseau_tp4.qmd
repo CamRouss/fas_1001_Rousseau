@@ -13,7 +13,9 @@ editor: visual
 
 ### Données
 
-Les variables `Season` et `TM` représentent respectivement la saison et l'équipe du joueur. La variable `GP` indique le nombre de matchs joués par le joueur, avec une moyenne de 74.35 matchs.
+Nous avons "scrapper" les données a partir du site StatMuse, un site web qui propose des statistiques et des informations sportives. Il utilise des données et des analyses avancées pour fournir des insights et des visualisations sur différents sports, notamment le hockey sur glace, le basketball, le football américain et le baseball. StatMuse permet aux utilisateurs d'explorer les performances des joueurs et des équipes, de comparer des statistiques, et d'obtenir des réponses à des questions spécifiques grâce à une interface conviviale. Le site est souvent utilisé par les amateurs de sport, les journalistes et les analystes pour accéder rapidement à des données et des informations détaillées sur les performances sportives. les variables que nous avons pu scrapper sont les suivantes:
+
+les Variables `Season` et `TM` représentent respectivement la saison et l'équipe du joueur. La variable `GP` indique le nombre de matchs joués par le joueur, avec une moyenne de 74.35 matchs.
 
 Les variables `G`, `A`, et `P` représentent respectivement les buts marqués, les aides réalisées et le total de points (but + aide) du joueur. Le joueur a en moyenne marqué 44.70 buts (`G`), réalisé 98.15 aides (`A`), totalisant ainsi 142.8 points (`P`).
 
@@ -155,3 +157,11 @@ graph2
 Dans les deux graphiques nous pouvons observer une forte production de points au début de sa carrière lorsqu'il était avec les Oilers d'Edmonton, qui a graduellement diminuer au fur et a mesure que sa carrière continue. Vu que le premier graphique ne prend pas en compte le nombre de match joué a chaque saison dans son calcul de somme des points, et bien nous proposons le deuxième graphique pour illustrer sa moyenne de points par match permettant ainsi d'avoir une vue équitable sur la production de points de Wayne Gretzky.
 
 Lors de nos analyses, nous avons pu observer une corrélation positive entre son nombre de points par saison et le nombre de minute de pénalité, ce qui veut dire que lorsque son nombre de minute de pénalité augmente et bien son nombre de point augmente également. Cela ne veut pas dire qu'il y a une causalité entre les deux.
+
+### Conclusion
+
+Le scraping de données est une pratique puissante pour collecter des informations à partir de sources en ligne, mais elle soulève également des questions éthiques importantes. Dans le cadre de ce projet, nous avons utilisé le scraping pour extraire des données pertinentes pour notre analyse. Cependant, Nous avons veillé à ne pas violer les droits de propriété intellectuelle des sites web en ne récupérant que les données accessibles publiquement et en respectant les conditions d'utilisation des sites.
+
+Le processus de collecte de données à des fins de recherche soulève des questions éthiques importantes. Dans le cadre de ce projet, le scraping de données à partir de sources publiques telles que Wikipedia , ou autre source de d'information en ligne et publique, soulève des questions sur la propriété des données et le respect de la vie privée des individus. Bien que les données collectées soient accessibles au public, il est important de reconnaître que ces données peuvent être utilisées de manière à nuire à la réputation ou à la vie privée des personnes mentionnées dans les articles.
+
+En outre, il est essentiel de prendre en compte les implications éthiques de l'utilisation des données collectées. Les résultats de cette recherche pourraient potentiellement influencer les décisions ou les perceptions des individus, des organisations ou du public en général. Il est donc crucial d'interpréter et de présenter les résultats de manière éthique et transparente, en mettant en évidence les limites et les biais éventuels de la méthodologie utilisée.
