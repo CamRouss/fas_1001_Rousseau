@@ -1,0 +1,157 @@
+---
+title: "fas1001_rousseau_tp4"
+author: "Camilien Rousseau"
+format: html
+editor: visual
+---
+
+## Travail pratique 4
+
+**Question de recherche :** Ma question de recherche porte sur l'analyse des statistiques de carrière de Wayne Gretzky, un joueur de hockey sur glace de renommée mondiale, afin de comprendre sa performance au fil des ans.
+
+**Importance de la recherche :** Wayne Gretzky est considéré comme l'un des plus grands joueurs de hockey de tous les temps, et ses statistiques de carrière suscitent un intérêt considérable parmi les amateurs de hockey, les analystes sportifs et les chercheurs. L'analyse de ses statistiques peut fournir des insights sur son style de jeu, le développement de ses compétences et son impact sur le jeu.
+
+### Données
+
+Les variables `Season` et `TM` représentent respectivement la saison et l'équipe du joueur. La variable `GP` indique le nombre de matchs joués par le joueur, avec une moyenne de 74.35 matchs.
+
+Les variables `G`, `A`, et `P` représentent respectivement les buts marqués, les aides réalisées et le total de points (but + aide) du joueur. Le joueur a en moyenne marqué 44.70 buts (`G`), réalisé 98.15 aides (`A`), totalisant ainsi 142.8 points (`P`).
+
+La variable `+/-` représente le différentiel de buts à égalité de force du joueur. En moyenne, ce différentiel est de 26.00.
+
+La variable `PIM` représente le nombre de minutes de pénalité du joueur, avec une moyenne de 28.85 minutes.
+
+Les variables `PPG` et `PPA` représentent respectivement les buts marqués et les aides réalisées en avantage numérique. En moyenne, le joueur a marqué 10.20 buts en avantage numérique (`PPG`) et réalisé 34.30 aides en avantage numérique (`PPA`).
+
+Les variables `SHG` et `SHA` représentent respectivement les buts marqués et les aides réalisées en infériorité numérique. Le joueur a en moyenne marqué 3.65 buts en infériorité numérique (`SHG`) et réalisé 3.8 aides en infériorité numérique (`SHA`).
+
+Les variables `GWG` et `OTG` représentent respectivement les buts gagnants et les buts marqués en prolongation par le joueur. En moyenne, le joueur a marqué 4.55 buts gagnants (`GWG`) et 0.125 but en prolongation (`OTG`).
+
+La variable `S` représente le nombre total de tirs au but du joueur, avec une moyenne de 254.4 tirs.
+
+La variable `S%` représente le pourcentage de réussite des tirs du joueur, avec une moyenne de 16.48%.
+
+La variable `Pts_GP` représente le nombre de points par match du joueur, avec une moyenne de 1.8951 points par match.
+
+```{r}
+#### Scraping de données de Hockeys sur glace ####
+
+# 1 - Libraries ----
+library(tidyverse)
+library(lubridate) # Package pour gérer des données temporelles
+#install.packages("rvest")
+library(rvest) # Package pour le scraping
+library(dplyr)
+library(ggplot2)
+
+# 2 - Scraping ----
+
+hockey_data <- read_html("https://www.statmuse.com/nhl/player/wayne-gretzky-2501")
+
+hockey_data1 <- hockey_data %>% 
+  html_elements("table")%>%
+  pluck(1) %>%
+  html_table(fill = TRUE) 
+
+#Nettoyage: 
+is_convertible <- function(x) {
+  all(grepl("^-?\\d+\\.?\\d*$", x, ignore.case = TRUE))
+}
+
+hockey_data1 <- hockey_data1 %>%
+  rename(Season = 1) %>%
+  head(-2) %>%
+  mutate_if(is_convertible, as.numeric) %>%
+  select(-ncol(.)) %>% 
+  mutate(TM = replace(TM, TM == "TOT", "STL")) %>%
+  mutate(Season = gsub("19", "", Season))
+
+glimpse(hockey_data1)
+
+
+# 3 - Analyse ----
+
+# 3.1 Analyse statisque:
+
+#Analyse de points par match / but par match et passe par match
+# Calculer les buts par match (B/M)
+goals_per_game <- sum(hockey_data1$G) / sum(hockey_data1$GP)
+
+#Calculer les passes par match (A/M)
+assists_per_game <- sum(hockey_data1$A) / sum(hockey_data1$GP)
+
+# Calculer les points par match (Pts/M)
+points_per_game <- sum(hockey_data1$P) / sum(hockey_data1$GP)
+
+
+goals_per_game #0.6
+assists_per_game #1.32
+points_per_game #1.92
+
+#Sommaire des statistiques: 
+summary_stats <- summary(hockey_data1)
+
+summary_stats
+
+# Analyse de corrélation entre les pénalités et les points/tirs au but ####
+
+# Calculer la correlation entre PIM et Pts
+correlation_pts_pim <- cor(hockey_data1$PIM, hockey_data1$P)
+
+#  Calculer la correlation entre PIM et Shots
+correlation_shots_pim <- cor(hockey_data1$PIM, hockey_data1$S)
+
+correlation_pts_pim #0.675
+correlation_shots_pim #0.711
+
+# 3.2 Graphique ----
+# Nuage de point sur la performance de Gretzky au travers des saisons:
+
+team_colors <- c("EDM" = "#FF4C00",  # Orange
+                 "LAK" = "black",    # Noir
+                 "STL" = "blue",  # Navy Blue
+                 "NYR" = "red")  # Rouge/Bleu
+
+
+
+
+graph1 <- ggplot(data = hockey_data1,
+                 aes(x = Season, y = P, color = TM)) +
+  geom_point() +
+  scale_color_manual(values = team_colors) +
+  labs(title = "Les points de Gretzky durant sa carrière",
+       x = "Saison",
+       y = "Points") +
+  scale_y_continuous(limits = c(0, max(hockey_data1$P) + 10), expand = c(0, 0)) +
+  theme_minimal()
+
+graph1
+
+# graphique 2:
+
+hockey_data1 <- hockey_data1 %>%
+  mutate(Pts_GP = P / GP)
+
+graph2 <-  ggplot(data = hockey_data1,
+                  aes(x = Season, y = Pts_GP, color = TM)) +
+  geom_point() +
+  scale_color_manual(values = team_colors)+
+  labs(title = "Points par match pour les différents saisons de Gretzky",
+       x = "Saison",
+       y = "Points par match") +
+  scale_y_continuous(limits = c(0, max(hockey_data1$Pts_GP) + 0.1)) +
+  theme_minimal()
+
+graph2
+
+
+
+
+
+```
+
+### Interprétation des graphiques:
+
+Dans les deux graphiques nous pouvons observer une forte production de points au début de sa carrière lorsqu'il était avec les Oilers d'Edmonton, qui a graduellement diminuer au fur et a mesure que sa carrière continue. Vu que le premier graphique ne prend pas en compte le nombre de match joué a chaque saison dans son calcul de somme des points, et bien nous proposons le deuxième graphique pour illustrer sa moyenne de points par match permettant ainsi d'avoir une vue équitable sur la production de points de Wayne Gretzky.
+
+Lors de nos analyses, nous avons pu observer une corrélation positive entre son nombre de points par saison et le nombre de minute de pénalité, ce qui veut dire que lorsque son nombre de minute de pénalité augmente et bien son nombre de point augmente également. Cela ne veut pas dire qu'il y a une causalité entre les deux.

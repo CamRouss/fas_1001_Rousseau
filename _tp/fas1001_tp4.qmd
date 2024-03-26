@@ -1,0 +1,136 @@
+---
+title: "Fas1001_Rousseau_tp4"
+format: html
+editor: visual
+---
+
+## Travail pratique 4
+
+With stats only on Wayne Gretzky, you can still perform several interesting analyses:
+
+1.  **Career Trajectory**: Plot Gretzky's points (Pts) or goals (G) over his career to visualize his performance trajectory.
+
+2.  **Scoring Trends**: Analyze how Gretzky's scoring performance changed over different seasons or in different teams to identify any trends or patterns.
+
+3.  **Goal Scoring Efficiency**: Calculate Gretzky's goals per game (G/GP) or points per game (Pts/GP) to assess his scoring efficiency.
+
+4.  **Impact of Assists**: Analyze the importance of assists (A) in Gretzky's scoring, such as the percentage of points that came from assists.
+
+5.  **Descriptive Statistics**: Calculate summary statistics (mean, median, standard deviation, etc.) for each variable to understand the typical performance of a player like Wayne Gretzky.
+
+6.  **Penalty Analysis**: Examine penalty minutes (PIM) to understand Gretzky's discipline on the ice and its impact on gameplay.
+
+```{r}
+#### Scraping de données de sondages canadiens ####
+
+# 1 - Libraries ----
+library(tidyverse)
+library(lubridate) # Package pour gérer des données temporelles
+#install.packages("rvest")
+library(rvest) # Package pour le scraping
+library(dplyr)
+library(ggplot2)
+
+# 2 - Scraping ----
+
+hockey_data <- read_html("https://www.statmuse.com/nhl/player/wayne-gretzky-2501")
+
+hockey_data1 <- hockey_data %>% 
+  html_elements("table")%>%
+  pluck(1) %>%
+  html_table(fill = TRUE) 
+
+#Nettoyage: 
+is_convertible <- function(x) {
+  all(grepl("^-?\\d+\\.?\\d*$", x, ignore.case = TRUE))
+}
+
+
+hockey_data1 <- hockey_data1 %>%
+  rename(Season = 1) %>%
+  head(-2) %>%
+  mutate_if(is_convertible, as.numeric) %>%
+  select(-ncol(.)) %>% 
+  mutate(TM = replace(TM, TM == "TOT", "STL"))
+
+glimpse(hockey_data1)
+
+# 3 - Analyse: ----
+
+
+# 3.1 Analyse statisque:
+
+#Analyse de points par match / but par match et passe par match
+# Calculer les buts par match (B/M)
+goals_per_game <- sum(hockey_data1$G) / sum(hockey_data1$GP)
+
+#Calculer les passes par match (A/M)
+assists_per_game <- sum(hockey_data1$A) / sum(hockey_data1$GP)
+
+# Calculer les points par match (Pts/M)
+points_per_game <- sum(hockey_data1$P) / sum(hockey_data1$GP)
+
+
+goals_per_game #0.6
+assists_per_game #1.32
+points_per_game #1.92
+
+#Sommaire des statistiques: 
+summary_stats <- summary(hockey_data1)
+
+summary_stats
+
+# Analyse de corrélation entre les pénalités et les points/tirs au but ####
+
+# Calculer la correlation entre PIM et Pts
+correlation_pts_pim <- cor(hockey_data1$PIM, hockey_data1$P)
+
+#  Calculer la correlation entre PIM et Shots
+correlation_shots_pim <- cor(hockey_data1$PIM, hockey_data1$S)
+
+correlation_pts_pim #0.675
+correlation_shots_pim #0.711
+
+# 3.2 Graphique ----
+# Nuage de point sur la performance de Gretzky au travers des saisons:
+
+team_colors <- c("EDM" = "#FF4C00",  # Orange
+                 "LAK" = "black",    # Noir
+                 "STL" = "blue",  # Navy Blue
+                 "NYR" = "red")  # Rouge/Bleu
+
+
+
+
+graph1 <- ggplot(data = hockey_data1,
+                 aes(x = Season, y = P, color = TM)) +
+  geom_point() +
+  scale_color_manual(values = team_colors) +
+  labs(title = "Les points de Gretzky durant sa carrière",
+       x = "Saison",
+       y = "Points") +
+   scale_y_continuous(limits = c(0, max(hockey_data1$P) + 10), expand = c(0, 0)) +
+  theme_minimal()
+
+graph1
+
+# graphique 2:
+
+hockey_data1 <- hockey_data1 %>%
+  mutate(Pts_GP = P / GP)
+
+graph2 <-  ggplot(data = hockey_data1,
+                  aes(x = Season, y = Pts_GP, color = TM)) +
+  geom_point() +
+  scale_color_manual(values = team_colors)+
+  labs(title = "Points par match pour les différents saisons de Gretzky",
+       x = "Saison",
+       y = "Points par match") +
+  scale_y_continuous(limits = c(0, max(hockey_data1$Pts_GP) + 0.1)) +
+  theme_minimal()
+
+graph2
+
+
+
+```
