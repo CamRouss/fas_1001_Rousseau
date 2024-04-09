@@ -29,12 +29,12 @@ Code secret:
 
 ```{r eval=TRUE, echo=FALSE}
 # importation des données sur l'activité physique:
-Physical_act <- read.csv("C:/Users/rouss/OneDrive - Universite de Montreal/fas_1001_rousseau/Nutrition__Physical_Activity__and_Obesity_-_Behavioral_Risk_Factor_Surveillance_System.csv")  
+Physical_act <- read.csv("C:/Users/Camilien/OneDrive - Universite de Montreal/fas_1001_rousseau/Nutrition__Physical_Activity__and_Obesity_-_Behavioral_Risk_Factor_Surveillance_System.csv")  
 
 View(Physical_act)  
 
 # importation des données sur l'éducation:
-Education <- readxl::read_xlsx("C:/Users/rouss/OneDrive - Universite de Montreal/fas_1001_rousseau/State - Income, Education Level by State.xlsx")  
+Education <- readxl::read_xlsx("C:/Users/Camilien/OneDrive - Universite de Montreal/fas_1001_rousseau/State - Income, Education Level by State.xlsx")  
 
 View(Education) 
 
@@ -209,19 +209,23 @@ Exemple des questions et de l'abondance de données:
 
 Dans la catégorie "Aucune activité physique"
 
-![](travail_session/figures/finale/graph_0pa.png)
+![](figures/finale/graph_0pa.png)
 
 Dans la catégorie 150 ou + min/semaine
 
-![](travail_session/figures/finale/graph_150min_pa.png)
+![](figures/finale/graph_150min_pa.png)
 
-![](travail_session/figures/finale/graph_300_min.png)
+Pour la catégorie de 300 ou + min/semaine
 
-![](travail_session/figures/finale/graph_muscu.png)
+![](figures/finale/graph_300_min.png)
+
+Pour la catégorie de 150 min/sem + au moins 2 jours de renforcement musuclaire (Gym)
+
+![](figures/finale/graph_muscu.png)
 
 ### 3.2.2 Présentations des données sur l'éducation:
 
-![](travail_session/figures/finale/graph_edu.png)
+![](figures/finale/graph_edu.png)
 
 # 4. Résultats:
 
@@ -229,7 +233,7 @@ Dans la catégorie 150 ou + min/semaine
 
 Graphique qui illustre les 10 États ayant les plus haut de diplomes au sein de leur population respective comparer au pourcentage moyens de l'État selon les 4 catégories d'activité physique.
 
-![](travail_session/figures/finale/super_graph1.png){width="1056" height="600"}
+![](figures/finale/super_graph1.png)
 
 ## 4.2 Résultats statistiques:
 
