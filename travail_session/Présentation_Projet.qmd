@@ -247,13 +247,17 @@ summary(model)
 
 ```
 
-L'intercept est de 0.2666. Cela signifie que lorsque toutes les autres variables sont nulles, la proportion de diplômés universitaires est estimée à 0.2666.
+**Coefficients** :
 
-ordre_activite : Le coefficient est -2.357e-05, mais il n'est pas significatif (p-value = 0.978). Cela suggère qu'il n'y a pas de relation significative entre le niveau d'activité physique et la proportion de diplômés universitaires.
+-   **Intercept (Constante)** : L'intercept est de 0.070, ce qui signifie que si toutes les autres variables sont nulles, la proportion de diplômes universitaires est d'environ 0.070.
 
-uni_au_25km, uni_au_50km, uni_au_75km, uni_au_100km : Ces variables représentent le nombre d'universités à différentes distances de l'État. Par exemple, pour uni_au_25km, chaque augmentation d'une unité dans le nombre d'universités dans un rayon de 25 km est associée à une augmentation de 0.0004545 dans la proportion de diplômés universitaires. Residuals :
+-   **ordre_activite** : Le coefficient est très proche de zéro et non significatif (p-value de 0.9709), ce qui suggère qu'il n'y a pas de relation significative entre le niveau d'activité physique et la proportion de diplômes universitaires.
 
-Les résidus (erreurs de prédiction) semblent être distribués symétriquement autour de zéro, ce qui indique que le modèle de régression est approprié.
+-   **state_median_income** : Pour chaque augmentation d'une unité dans le revenu médian de l'État, la proportion de diplômes universitaires augmente d'environ 3.502e-06.
+
+-   **uni_au_25km, uni_au_50km, uni_au_75km, uni_au_100km** : Ces coefficients indiquent l'impact des universités situées à différentes distances de l'État sur la proportion de diplômes universitaires. Par exemple, pour **`uni_au_25km`**, une augmentation d'une unité est associée à une augmentation d'environ 0.0007 dans la proportion de diplômes universitaires.
+
+-   Les **résidus** (erreurs de prédiction) semblent être distribués symétriquement autour de zéro, ce qui indique que le modèle de régression est approprié.
 
 # 5. Inférence:
 
