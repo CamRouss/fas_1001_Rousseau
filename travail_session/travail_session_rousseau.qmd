@@ -1,16 +1,396 @@
 ---
-title: "travail_session_rousseau"
-author: "Camilien Rousseau"
-format: html
-editor: visual
+title: "fas1001_Plan_Rousseau" 
+format: revealjs 
+editor: visual 
+toc: true
 ---
 
-# Introduction
+#### Librairies & Packages:
 
-## Problématique de recherche
+```{r}
+# Librairies & Packages: 
+#install.packages("tidyverse") 
+suppressMessages(library(tidyverse)) 
+#install.packages("ggplot2") 
+library(ggplot2)
+#install.packages("stats")
+library(stats)
+#install.packages("viridis")
+library(viridis)
+```
 
-## Données et méthodes
+## 1 - Question de recherche et raisons motivant cette dernière.
 
-## Résultats
+Quel est l'impact de l'activité physique le niveau d'éducation dans la population des États-Unis?
 
-# Conclusion
+Voici plusieurs raisons qui motivent se choix de sujet:
+
+1.  **Intérêt personnel** : En tant qu'étudiant athlète passionné par l'activité physique, cette question permet d'explorer un sujet qui me concerne directement, ce qui peut rendre la recherche plus motivante et significative. De plus, étant un étudiant en science politique, il s'agit d'une oppotunité de joindre des loisirs et passions a mon sujet d'étude, quelque chose que je n'ai pas vraiment eu la chance de faire a cette ampleure auparavant dans mon cheminement académique.
+
+2.  **Impact potentiel** : Comprendre la relation entre le niveau d'éducation, l'activité physique et la santé chez les étudiants athlètes peut avoir un impact important sur la promotion de modes de vie sains et l'amélioration des performances académiques et sportives.
+
+3.  **Portée large** : En examinant l'impact de l'activité physique sur la santé et le niveau d'éducation dans la population des États-Unis, cette étude pourrait avoir des implications pour la santé publique à l'échelle nationale.
+
+4.  **Compréhension globale** : Cette question permet d'explorer comment l'activité physique peut influencer à la fois la santé et le niveau d'éducation, offrant ainsi une vision globale de son importance pour le bien-être global des individus.
+
+5.  **Politiques publiques** : Les résultats de cette recherche pourraient être utilisés pour informer les politiques publiques visant à promouvoir l'activité physique et à améliorer la santé et le niveau d'éducation de la population.
+
+6.  **Comparaison entre groupes** : Vous pourriez également envisager de comparer les effets de l'activité physique sur la santé et le niveau d'éducation entre différents groupes démographiques, ce qui pourrait mettre en lumière des disparités et des facteurs de risque potentiels
+
+## 2 - Données et Méthodes d'analyse:
+
+### 2.1 Données:
+
+Une partie des données qui sera utilisée provient du Behavioral Risk Factor Surveillance System (BRFSS) un système de surveillance des facteurs de risque comportementaux. Il s'agit d'une enquête téléphonique menée chaque année aux États-Unis par les Centers for Disease Control and Prevention (CDC) pour collecter des informations sur les comportements liés à la santé de la population, tels que le tabagisme, la consommation d'alcool, l'activité physique, l'alimentation, l'utilisation de la ceinture de sécurité, etc. Les données recueillies par le BRFSS sont utilisées pour surveiller les tendances des comportements à risque, planifier et évaluer les programmes de santé publique, et orienter les politiques de santé.
+
+les variables qui nous intréssent vont comme suit: L'année de début de l'étude, représentée par la variable YearStart, permet d'identifier quand les données ont été collectées. La variable Data_Value indique les valeurs des données, exprimées en pourcentage, qui représentent les niveaux d'activité physique, de santé ou de niveau d'éducation. La variable LocationDesc fournit une description de l'emplacement, permettant d'identifier les lieux où les données ont été collectées. La variable Question décrit la question posée dans l'enquête, définissant ainsi le sujet de l'étude. Les variables StratificationCategory1 et Stratification1 sont utilisées pour regrouper les données selon différentes caractéristiques, telles que le groupe d'âge ou le sexe. La variable Sample_Size indique la taille de l'échantillon, permettant d'évaluer la fiabilité des estimations basées sur les données. En outre, les variables Income, Race/Ethnicity et Gender sont utilisées pour évaluer l'impact du revenu, de l'origine ethnique et du genre sur les niveaux d'activité physique, de santé et de niveau d'éducation, respectivement. Ces variables sont essentielles pour comprendre les résultats de l'étude et évaluer les différences entre les groupes.
+
+Une autre partie des données provient du département d'éducation du gouvernement des États-Unis et donné en open source. Les données utilisées comprennent plusieurs variables importantes. La variable "state" représente l'état dans lequel les données ont été collectées, fournissant ainsi des informations sur la région étudiée. La variable "region" fournit des détails supplémentaires sur la région géographique à laquelle appartient l'état. La variable "state_median_income" indique le revenu médian de l'état, offrant ainsi un aperçu de la situation économique générale de la région. La variable "state_income_percentile" indique le percentile du revenu de l'état par rapport aux autres états, ce qui permet de comparer le niveau de revenu de l'état avec celui des autres régions. La variable "state_proportion_with_bachelors_or_higher" représente la proportion de personnes dans l'état ayant un diplôme de bachelier ou un niveau d'éducation plus élevé, ce qui peut être un indicateur de la qualité de l'éducation dans la région. Les variables "total_colleges_within_25km_of_state_counties", "total_colleges_within_50km_of_state_counties", "total_colleges_within_75km_of_state_counties" et "total_colleges_within_100km_of_state_counties" indiquent le nombre total de collèges situés à différentes distances des comtés de l'état, ce qui peut être utile pour évaluer l'accessibilité à l'éducation supérieure dans la région. Ces variables sont cruciales pour comprendre la relation entre le niveau de revenu, le niveau d'éducation et l'accessibilité à l'éducation supérieure dans chaque état.
+
+Une troisième base de données provenant de la même source que la deuxième nous offre des données sur la démographie de la population américaine, selon les États ainsi que sur trois années (2017, 2018, 2019), ce qui nous indique comment filtrer ou nettoyer nos donner selon les dates, questions que nos analyses futures soient pertinentes et précises.
+
+```{r}
+# importation des données sur l'activité physique:
+Physical_act <- read.csv("C:/Users/rouss/OneDrive - Universite de Montreal/fas_1001_rousseau/Nutrition__Physical_Activity__and_Obesity_-_Behavioral_Risk_Factor_Surveillance_System.csv")  
+
+View(Physical_act)  
+
+# importation des données sur l'éducation:
+Education <- readxl::read_xlsx("C:/Users/rouss/OneDrive - Universite de Montreal/fas_1001_rousseau/State - Income, Education Level by State.xlsx")  
+
+View(Education)  
+```
+
+#### 
+
+### 2.2 Nettoyage des données
+
+```{r}
+# Nettoyage de données de la banque de pour l'activité physique: 
+
+questions_activite_physique <- c(
+  "Percent of adults who engage in no leisure-time physical activity",
+  "Percent of adults who achieve at least 150 minutes a week of moderate-intensity aerobic physical activity or 75 minutes a week of vigorous-intensity aerobic activity (or an equivalent combination)",
+  "Percent of adults who achieve at least 300 minutes a week of moderate-intensity aerobic physical activity or 150 minutes a week of vigorous-intensity aerobic activity (or an equivalent combination)",
+  "Percent of adults who achieve at least 150 minutes a week of moderate-intensity aerobic physical activity or 75 minutes a week of vigorous-intensity aerobic physical activity and engage in muscle-strengthening activities on 2 or more days a week"
+)
+
+noms_questions <- data.frame(
+  Question = questions_activite_physique,
+  niveau_activite = c(
+    "Aucune activité physique",
+    "150+ min/sem",
+    "300+ min/sem",
+    "renforcement musculaire"
+  ),
+  ordre_activite = c(1, 2, 3, 4)
+)
+
+physical_act_clean <- Physical_act %>%  
+  filter(YearStart %in% c(2017)) %>%   
+  select(LocationDesc, Question, Data_Value, Stratification1, Sample_Size) %>%
+  filter(Question %in% questions_activite_physique) %>%
+  left_join(noms_questions, by = "Question") %>%
+  select(-Question) %>% 
+  rename(state = LocationDesc) %>% 
+  rename(proportion_activite = Data_Value) %>% 
+  drop_na()
+
+
+
+
+# Nettoyage de la banque de données d'éducation: 
+education_clean <- Education %>%    
+  select(-region, -state_income_percentile) %>% 
+  rename(diplomes_universitaires = state_proportion_with_bachelors_or_higher,
+         uni_au_25km = total_colleges_within_25km_of_state_counties,
+         uni_au_50km = total_colleges_within_50km_of_state_counties,
+         uni_au_75km = total_colleges_within_75km_of_state_counties,
+         uni_au_100km = total_colleges_within_100km_of_state_counties)
+
+
+# Groupement des bases de données:
+# Joindre la base de données sur l'éducation et les universités :
+pa_education <- merge(physical_act_clean, education_clean, by = "state", all.x = TRUE)%>%
+  mutate(
+    ordre_activite_1 = as.integer(niveau_activite == "Aucune activité physique"),
+    ordre_activite_2 = as.integer(niveau_activite == "150+ min/sem"),
+    ordre_activite_3 = as.integer(niveau_activite == "300+ min/sem"),
+    ordre_activite_4 = as.integer(niveau_activite == "renforcement musculaire"),
+         replace(diplomes_universitaires, is.na(diplomes_universitaires), 0)
+  )
+
+```
+
+### 2.3 Visualisation des différentes données:
+
+#### 2.3.1 Activité physique:
+
+```{r}
+# Calculer les moyennes par État
+mean_data <- pa_education %>%
+  group_by(state, ordre_activite) %>%
+  summarize(mean_proportion_diplomes = mean(diplomes_universitaires),
+            proportion_activite = first(proportion_activite))
+
+# Identifier les États avec les taux les plus élevés dans chaque catégorie
+top_states <- mean_data %>%
+  group_by(ordre_activite) %>%
+  top_n(10, mean_proportion_diplomes) %>%
+  arrange(ordre_activite, desc(mean_proportion_diplomes))
+
+#View(top_states)
+
+# Convertir ordre_activite en facteur pour maintenir l'ordre des niveaux
+top_states_sorted <- top_states %>%
+  arrange(ordre_activite, mean_proportion_diplomes) 
+
+```
+
+##### Aucune activité physique:
+
+!!!!!!refaire les titres:
+
+```{r}
+graph_0pa <- ggplot(subset(top_states_sorted, ordre_activite == 1), 
+                    aes(x = reorder(state, -proportion_activite), 
+                        y = proportion_activite)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  scale_y_continuous(limits = c(0, 40),
+                     breaks = seq(0,40, by = 5))+
+  labs(title = "États avec Aucune activité physique",
+       x = "État", y = "Proportion d'activité physique") +
+  theme(panel.grid.major.x = element_blank(),
+        axis.text.x = element_text(angle = 45, hjust = 1),
+        axis.line = element_line(colour = "black")) +
+  theme_minimal()
+graph_0pa
+
+# enregistrement du graphique dans notre Rproj
+dir.create("figures")
+save(graph_0pa, file = "figures/graph_0pa.Rda")
+
+ggsave(graph_0pa, 
+       filename = "figures/finale/graph_0pa.png", 
+       dpi = 320,
+       bg = "white",#on mentionne blanc pcq 'theme_minimal()' le met transparent 
+       units = "cm",
+       height = 16,
+       width = 26)
+```
+
+##### 150 min/sem
+
+```{r}
+# Graphique pour "150+ min/sem"
+graph_150min_pa <- ggplot(subset(top_states_sorted, ordre_activite == 2), 
+                          aes(x = reorder(state, -proportion_activite), 
+                              y = proportion_activite)) +
+  geom_bar(stat = "identity", fill = "lightgreen") +
+  scale_y_continuous(limits = c(0, 70),
+                     breaks = seq(0,70, by = 10))+
+  labs(title = "États avec 150+ min/sem",
+       x = "État", y = "Proportion d'activité physique") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        axis.line = element_line(colour = "black"))+
+  theme_minimal()
+
+graph_150min_pa
+
+#Enregistrement du graphique
+save(graph_150min_pa, file = "figures/graph_150min_pa.Rda")
+
+ggsave(graph_150min_pa, 
+       filename = "figures/finale/graph_150min_pa.png", 
+       dpi = 320,
+       bg = "white",
+       units = "cm",
+       height = 16,
+       width = 26)
+```
+
+##### 300 + min/sem
+
+```{r}
+# Graphique pour "300+ min/sem"
+graph_300_min <- ggplot(subset(top_states_sorted, ordre_activite == 3), 
+                        aes(x = reorder(state, -proportion_activite), 
+                            y = proportion_activite)) +
+  geom_bar(stat = "identity", fill = "salmon") +
+  scale_y_continuous(limits = c(0, 40),
+                     breaks = seq(0,40, by = 5))+
+  labs(title = "États avec 300+ min/sem",
+       x = "État", y = "Proportion d'activité physique") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        axis.line = element_line(colour = "black"))+
+  theme_minimal()
+
+graph_300_min
+
+#Enregistrement du graphique
+save(graph_300_min, file = "figures/graph_300_min.Rda")
+
+ggsave(graph_300_min, 
+       filename = "figures/finale/graph_300_min.png", 
+       dpi = 320,
+       bg = "white",
+       units = "cm",
+       height = 16,
+       width = 26)
+```
+
+##### renforcement musculaire
+
+```{r}
+# Graphique pour "Renforcement musculaire"
+graph_muscu <- ggplot(subset(top_states_sorted, ordre_activite == 4), 
+                      aes(x = reorder(state, -proportion_activite), 
+                          y = proportion_activite)) +
+  geom_bar(stat = "identity", fill = "orange") +
+  scale_y_continuous(limits = c(0, 40),
+                     breaks = seq(0,40, by = 5))+
+  labs(title = "États avec Renforcement musculaire",
+       x = "État", y = "Proportion d'activité physique") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        axis.line = element_line(colour = "black"))+
+  theme_minimal()
+
+graph_muscu
+
+#Enregistrement du graphique
+save(graph_muscu, file = "figures/graph_muscu.Rda")
+
+ggsave(graph_muscu, 
+       filename = "figures/finale/graph_muscu.png", 
+       dpi = 320,
+       bg = "white",
+       units = "cm",
+       height = 16,
+       width = 26)
+```
+
+
+#### 2.3.2 Visualisation des proportion d'éducation:
+```{r}
+mean_education <- pa_education %>%
+  filter(!is.na(diplomes_universitaires)) %>%
+  group_by(state) %>%
+  summarize(mean_diplomes_universitaires = mean(diplomes_universitaires))
+
+# Trier les États en fonction de la moyenne de diplomes_universitaires
+pa_education_sorted <- pa_education %>%
+  left_join(mean_education, by = "state") %>%
+  filter(!is.na(mean_diplomes_universitaires)) %>%
+  arrange(desc(mean_diplomes_universitaires))
+
+# Créer un graphique pour la proportion d'éducation par État
+graph_edu <- ggplot(pa_education_sorted, aes(x = reorder(state, mean_diplomes_universitaires), y = diplomes_universitaires)) +
+  geom_point(stat = "identity", fill = "skyblue") +
+  scale_y_continuous(limits = c(0, 0.6),
+                      breaks = seq(0, 0.6, by = 0.1))+
+  labs(title = "Proportion d'éducation par État",
+       x = "État", y = "Proportion d'éducation") +
+  theme( panel.grid.minor.y = element_blank(),
+         axis.text.x = element_text(angle = 45, hjust = 1),
+        axis.line = element_line(colour = "black")) +
+  theme_minimal() +
+  coord_flip()
+
+graph_edu
+
+#Enregistrer le graphique: 
+save(graph_edu, file = "figures/graph_edu.Rda")
+
+ggsave(graph_edu, 
+       filename = "figures/finale/graph_edu.png", 
+       dpi = 320,
+       bg = "white",
+       units = "cm",
+       height = 16,
+       width = 26)
+```
+
+## 3- Analyse par État:
+
+```{r}
+
+# Créer un graphique ggplot avec des facettes pour chaque niveau d'ordre_activite
+super_graph1 <- ggplot(top_states_sorted, aes(x = reorder(state, mean_proportion_diplomes), y = mean_proportion_diplomes, fill = proportion_activite)) +
+  geom_bar(stat = "identity") +
+  scale_y_continuous(limits = c(0, 0.6),
+                      breaks = seq(0, 0.6, by = 0.1)) +
+  labs(title = "Top 10 États pour chaque niveau d'activité physique",
+       x = "État", y = "Proportion d'obtention de diplômes universitaires",
+       fill = "Proportion d'activité physique") +
+  facet_wrap(~ ordre_activite, scales = "free_y", ncol = 1,labeller = labeller
+             (ordre_activite = c("1" = "Aucune activité physique",
+                                 "2" = "150+ min/sem",
+                                 "3" = "300+ min/sem", 
+                                 "4" = "renforcement musculaire"))) +
+  scale_fill_viridis(discrete = TRUE) +  # Utiliser la palette de couleurs viridis) +
+  scale_fill_viridis() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "top") +
+  coord_flip() +
+  theme_minimal()
+
+super_graph1
+
+#Enregistrer le graphique: 
+save(super_graph1, file = "figures/super_graph1.Rda")
+
+ggsave(super_graph1, 
+       filename = "figures/finale/super_graph1.png", 
+       dpi = 320,
+       bg = "white",
+       units = "cm",
+       height = 16,
+       width = 26)
+```
+
+#### Méthodes d'analyse
+
+Le but de l'analyse des données et d'essayer de voir s'il y a une relation entre le niveau d'activité physique et de santé et le niveau d'éducation de la population des États-Unis. Pour se faire nous allons procéder a des analyse statistiques afin de démontrer que notre hypothèse selon laquelle, les États américains où le niveau d'activité physique est le plus élevé auront également le plus haut niveau d'éducation en pourcentage.
+
+1.  **Analyse descriptives** : Pour décrire les caractéristiques de la population étudiée en termes d'activité physique, de santé et de niveau d'éducation, en utilisant des statistiques descriptives telles que les moyennes, les médianes et les écarts-types.
+
+2.  **Analyse de corrélation** : Pour examiner les relations entre l'activité physique, la santé et le niveau d'éducation, en utilisant des techniques telles que la corrélation de Pearson ou de Spearman pour mesurer les associations entre les variables.
+
+3.  **Régression linéaire** : Pour étudier comment l'activité physique influence la santé et le niveau d'éducation, en contrôlant les variables confondantes potentielles.
+
+Vos conseils sont le bienvenue sur quels types d'analyse je devrais faire!Analyse:
+
+#### 
+
+```{r}
+
+summary_data <- pa_education %>%
+   drop_na(diplomes_universitaires) %>%
+  group_by(niveau_activite) %>%
+  summarize(mean_proportion_diplomes = mean(diplomes_universitaires),
+            median_proportion_diplomes = median(diplomes_universitaires),
+            sd_proportion_diplomes = sd(diplomes_universitaires))
+summary_data
+
+
+# Analyse de régression du niveau d'activité physique en fonction du niveau d'éducation
+model <- lm(diplomes_universitaires ~ ordre_activite + state_median_income + uni_au_25km + uni_au_50km + uni_au_75km + uni_au_100km, data = pa_education)
+
+# Résumé de la régression
+summary(model)
+
+```
+
+Coefficients :
+
+Intercept : L'intercept est de 0.2666. Cela signifie que lorsque toutes les autres variables sont nulles, la proportion de diplômés universitaires est estimée à 0.2666.
+ordre_activite : Le coefficient est -2.357e-05, mais il n'est pas significatif (p-value = 0.978). Cela suggère qu'il n'y a pas de relation significative entre le niveau d'activité physique et la proportion de diplômés universitaires.
+uni_au_25km, uni_au_50km, uni_au_75km, uni_au_100km : Ces variables représentent le nombre d'universités à différentes distances de l'État. Par exemple, pour uni_au_25km, chaque augmentation d'une unité dans le nombre d'universités dans un rayon de 25 km est associée à une augmentation de 0.0004545 dans la proportion de diplômés universitaires.
+Residuals :
+
+Les résidus (erreurs de prédiction) semblent être distribués symétriquement autour de zéro, ce qui indique que le modèle de régression est approprié.
+
+### Conclusion:
+Nous avons analysé le lien entre le niveau d'activité physique et le niveau d'éducation dans la population des États-Unis. À partir des données, nous avons constaté que le niveau d'activité physique ne semble pas avoir une influence significative sur le niveau d'éducation. Les coefficients associés aux différents niveaux d'activité physique dans la régression multivariée étaient proches de zéro et non significatifs. Cela suggère qu'il n'y a pas de relation linéaire claire entre le niveau d'activité physique et le niveau d'éducation dans notre modèle.
+
+Il est important de noter que cette conclusion est basée sur les données et le modèle spécifique que nous avons utilisés. D'autres facteurs non pris en compte dans notre analyse pourraient jouer un rôle dans la relation entre l'activité physique et le niveau d'éducation. Par exemple, des facteurs socio-économiques, culturels ou environnementaux pourraient également influencer à la fois l'activité physique et le niveau d'éducation. Une analyse plus approfondie et l'utilisation de données supplémentaires pourraient être nécessaires pour mieux comprendre cette relation complexe.

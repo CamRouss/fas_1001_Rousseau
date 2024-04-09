@@ -46,7 +46,7 @@ Une troisième base de données provenant de la même source que la deuxième no
 
 ```{r}
 
-Physical_act <- read.csv("Nutrition__Physical_Activity__and_Obesity_-_Behavioral_Risk_Factor_Surveillance_System.csv")
+Physical_act <- read.csv("C:/Users/Camilien/OneDrive - Universite de Montreal/fas_1001_Rousseau/dataNutrition__Physical_Activity__and_Obesity_-_Behavioral_Risk_Factor_Surveillance_System.csv")
 
 View(Physical_act)
 
@@ -99,7 +99,7 @@ Beaucoup d'autre manipulation de nettoyage doivent être effectuées dans cette 
 
 Il en est de même pour les niveaux d'obésité, soit les classés en les comptant comme étant des vecteurs de non-activité physique ou un manquement de. Ou encore de les retirer carrément parce qu'ils ne sont pas directement liées au sujet d'étude.
 
-## 3 - Visualisation: 
+## 3 - Visualisation:
 
 Pour accompagner l'analyse nous allons représenter quelques résultats sous la forme de graphique.
 

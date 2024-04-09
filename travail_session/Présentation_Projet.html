@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Camilien Rousseau">
+
+<title>Présentation Projet</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="Présentatio_test_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Présentatio_test_files/libs/quarto-html/quarto.js"></script>
+<script src="Présentatio_test_files/libs/quarto-html/popper.min.js"></script>
+<script src="Présentatio_test_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Présentatio_test_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Présentatio_test_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Présentatio_test_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Présentatio_test_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Présentatio_test_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Présentatio_test_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#librairies-packages" id="toc-librairies-packages" class="nav-link active" data-scroll-target="#librairies-packages">Librairies &amp; Packages:</a></li>
+  <li><a href="#problématique-de-base" id="toc-problématique-de-base" class="nav-link" data-scroll-target="#problématique-de-base">1 - Problématique de base</a></li>
+  <li><a href="#question-de-recherche" id="toc-question-de-recherche" class="nav-link" data-scroll-target="#question-de-recherche">2- Question de recherche</a></li>
+  <li><a href="#données" id="toc-données" class="nav-link" data-scroll-target="#données">3 - Données:</a>
+  <ul class="collapse">
+  <li><a href="#nettoyage" id="toc-nettoyage" class="nav-link" data-scroll-target="#nettoyage">3.1 Nettoyage:</a></li>
+  <li><a href="#visualisations" id="toc-visualisations" class="nav-link" data-scroll-target="#visualisations">3.2 Visualisations:</a>
+  <ul class="collapse">
+  <li><a href="#présentations-des-proportions-dactivités-physiques-selon-les-états" id="toc-présentations-des-proportions-dactivités-physiques-selon-les-états" class="nav-link" data-scroll-target="#présentations-des-proportions-dactivités-physiques-selon-les-états">3.2.1 Présentations des proportions d’activités physiques selon les États</a></li>
+  <li><a href="#présentations-des-données-sur-léducation" id="toc-présentations-des-données-sur-léducation" class="nav-link" data-scroll-target="#présentations-des-données-sur-léducation">3.2.2 Présentations des données sur l’éducation:</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#résultats" id="toc-résultats" class="nav-link" data-scroll-target="#résultats">4. Résultats:</a>
+  <ul class="collapse">
+  <li><a href="#résultats-ggraphiques" id="toc-résultats-ggraphiques" class="nav-link" data-scroll-target="#résultats-ggraphiques">4.1 Résultats ggraphiques:</a></li>
+  <li><a href="#résultats-statistiques" id="toc-résultats-statistiques" class="nav-link" data-scroll-target="#résultats-statistiques">4.2 Résultats statistiques:</a></li>
+  </ul></li>
+  <li><a href="#inférence" id="toc-inférence" class="nav-link" data-scroll-target="#inférence">5. Inférence:</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Présentation Projet</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Camilien Rousseau </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>1 - problématique de base, 2 - question de recherche, 3 - données utilisées et pourquoi elles sont intéressantes pour répondre à la question de recherche, 4 - la présentation des résultats préliminaires ou finaux (les vôtres), 5 - implication des résultats pour le vrai monde (ce qu’on appelle communément en science, l’inférence)</p>
+<section id="librairies-packages" class="level1">
+<h1>Librairies &amp; Packages:</h1>
+<p>Librairies et packages utilisés:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Librairies &amp; Packages: </span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("tidyverse") </span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressMessages</span>(<span class="fu">library</span>(tidyverse)) </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("ggplot2") </span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("stats")</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stats)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("viridis")</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(viridis)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: le package 'viridis' a été compilé avec la version R 4.3.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Le chargement a nécessité le package : viridisLite</code></pre>
+</div>
+</div>
+<p>Code secret:</p>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'state'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+</div>
+</section>
+<section id="problématique-de-base" class="level1">
+<h1>1 - Problématique de base</h1>
+<p>Le sujet a été étudié de façon abondante chez les enfants (Álvarez-Bueno et al.&nbsp;2017) , mais moins chez les adultes, surtout au niveau académique universitaire. u</p>
+<p>“Comment l’engagement dans une activité physique régulière chez les adultes peut-il influencer leur niveau d’éducation, et quelles implications cela pourrait-il avoir sur la santé publique et les politiques éducatives ?”</p>
+<p>Cette problématique soulève des questions importantes sur la relation entre le mode de vie actif et les résultats académique dans notre cas, mais également sur les performances professionelles, ainsi que sur les moyens par lesquels les politiques de promotion de la santé et de l’éducation pourraient être améliorées pour favoriser des résultats positifs dans ces domaines.</p>
+</section>
+<section id="question-de-recherche" class="level1">
+<h1>2- Question de recherche</h1>
+<p>Question de recherche:</p>
+<p>Quel est l’impact de l’activité physique le niveau d’éducation dans la population des États-Unis?</p>
+<p>Voici plusieurs raisons qui motivent se choix de sujet:</p>
+<ol type="1">
+<li><p><strong>Intérêt personnel</strong> : Étant moi même un étudiant universitaire qui fait beaucoup d’activité physique.</p></li>
+<li><p><strong>Impact potentiel</strong> : Comprendre la relation, peut avoir un impact important sur la promotion de modes de vie sains et l’amélioration des performances académiques et sportives.</p></li>
+<li><p><strong>Portée large</strong> : En examinant l’impact de l’activité physique sur la santé et le niveau d’éducation dans la population des États-Unis, cette étude pourrait avoir des implications pour la santé publique à l’échelle nationale.</p></li>
+<li><p><strong>Compréhension globale</strong> : Cette question permet d’explorer comment l’activité physique peut influencer à la fois la santé et le niveau d’éducation, offrant ainsi une vision globale de son importance pour le bien-être des individus.</p></li>
+<li><p><strong>Politiques publiques</strong> : Les résultats de cette recherche pourraient être utilisés pour informer les politiques publiques visant à promouvoir l’activité physique et à améliorer la santé et le niveau d’éducation de la population.</p></li>
+<li><p><strong>Comparaison entre groupes</strong> : Nous pourrions également envisager de comparer les effets de l’activité physique sur la santé et le niveau d’éducation entre différents groupes démographiques, ce qui pourrait mettre en lumière des disparités et des facteurs de risque potentiels</p></li>
+</ol>
+</section>
+<section id="données" class="level1">
+<h1>3 - Données:</h1>
+<section id="données-sur-lactivité-physique" class="level4">
+<h4 class="anchored" data-anchor-id="données-sur-lactivité-physique">Données sur l’activité physique:</h4>
+<p>Les données sur l’activité physique proviennent du “Behavioral Risk Factor Surveillance System” (BRFSS), un système de surveillance des facteurs de risque comportementaux géré par les Centers for Disease Control and Prevention (CDC) aux États-Unis. Le BRFSS est une enquête téléphonique nationale menée chaque année auprès de milliers d’adultes américains. Les questions sur l’activité physique dans le BRFSS sont conçues pour évaluer la fréquence et la durée de différentes formes d’activité physique pratiquée par les adultes</p>
+</section>
+<section id="données-sur-léducation" class="level4">
+<h4 class="anchored" data-anchor-id="données-sur-léducation">Données sur l’éducation</h4>
+<p>Les autres données proviennent du site du gouvernement américain data.gov et sont des données agrégées au niveau de l’État, fournissant des informations sur la proportion d’adultes dans chaque État ayant obtenu au moins un baccalauréat. Ces données peuvent provenir d’enquêtes nationales sur l’éducation ou d’autres bases de données gouvernementales ou institutionnelles qui recueillent des données sur l’éducation aux États-Unis.</p>
+<p>Les données sélectionnées pour répondre à la question de recherche sur l’impact de l’activité physique sur le niveau d’éducation aux États-Unis sont pertinentes, car elles fournissent des informations détaillées sur la pratique de l’activité physique et les niveaux d’éducation dans différents États.</p>
+<p>Les données sur l’activité physique sont basées sur des indicateurs clés tels que le pourcentage d’adultes pratiquant une activité physique régulière, y compris des activités aérobiques et de renforcement musculaire, tandis que les données sur l’éducation fournissent des informations sur la proportion d’adultes détenant au moins un baccalauréat.</p>
+</section>
+<section id="nettoyage" class="level2">
+<h2 class="anchored" data-anchor-id="nettoyage">3.1 Nettoyage:</h2>
+<p>Le processus de nettoyage des données a consisté en plusieurs étapes pour préparer les données à l’analyse :</p>
+<ol type="1">
+<li><p><strong>Sélection des variables pertinentes</strong> : Les variables pertinentes pour l’analyse, telles que le pourcentage d’adultes pratiquant différentes activités physiques et les données sur l’éducation, ont été sélectionnées.</p></li>
+<li><p><strong>Filtrage des données</strong> : Les données ont été filtrées pour ne conserver que les informations relatives à l’année 2017, qui était l’année d’intérêt pour l’étude.</p></li>
+<li><p><strong>Reformatage des données</strong> : Les données ont été reformatées pour assurer leur cohérence et faciliter leur utilisation dans l’analyse. Par exemple, les données sur l’activité physique ont été reformatées pour inclure des catégories spécifiques d’activité physique, telles que “Aucune activité physique” ou “Renforcement musculaire”.</p></li>
+<li><p><strong>Traitement des données manquantes</strong> : Les données manquantes ont été traitées de différentes manières en fonction du contexte. Dans certains cas, les lignes contenant des données manquantes ont été supprimées, tandis que dans d’autres cas, les valeurs manquantes ont été remplacées par des valeurs par défaut (par exemple, zéro) pour éviter les problèmes lors de l’analyse.</p></li>
+<li><p><strong>Jointure des données</strong> : Les données sur l’activité physique et l’éducation ont été jointes en utilisant la colonne “state” comme clé de jointure pour créer un ensemble de données combiné contenant des informations sur les deux variables.</p></li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>questions_activite_physique <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Percent of adults who engage in no leisure-time physical activity"</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Percent of adults who achieve at least 150 minutes a week of moderate-intensity aerobic physical activity or 75 minutes a week of vigorous-intensity aerobic activity (or an equivalent combination)"</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Percent of adults who achieve at least 300 minutes a week of moderate-intensity aerobic physical activity or 150 minutes a week of vigorous-intensity aerobic activity (or an equivalent combination)"</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Percent of adults who achieve at least 150 minutes a week of moderate-intensity aerobic physical activity or 75 minutes a week of vigorous-intensity aerobic physical activity and engage in muscle-strengthening activities on 2 or more days a week"</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>noms_questions <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">Question =</span> questions_activite_physique,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">niveau_activite =</span> <span class="fu">c</span>(</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Aucune activité physique"</span>,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"150+ min/sem"</span>,</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"300+ min/sem"</span>,</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"renforcement musculaire"</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">ordre_activite =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Exemple des questions et de l’abondance de données:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#unique(Physical_act$Question)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#[1] "Percent of adults who engage in no leisure-time physical activity"                                                                                                                                                                                    </span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">#[2] "Percent of adults aged 18 years and older who have obesity"                                                                                                                                                                                           </span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#[3] "Percent of adults aged 18 years and older who have an overweight classification"                                                                                                                                                                      </span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">#[4] "Percent of adults who achieve at least 300 minutes a week of moderate-intensity aerobic physical activity or 150 minutes a week of vigorous-intensity aerobic activity (or an equivalent combination)"                                                </span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#[5] "Percent of adults who achieve at least 150 minutes a week of moderate-intensity aerobic physical activity or 75 minutes a week of vigorous-intensity aerobic physical activity and engage in muscle-strengthening activities on 2 or more days a week"</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#[6] "Percent of adults who achieve at least 150 minutes a week of moderate-intensity aerobic physical activity or 75 minutes a week of vigorous-intensity aerobic activity (or an equivalent combination)"                                                 </span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">#[7] "Percent of adults who engage in muscle-strengthening activities on 2 or more days a week"                                                                                                                                                             </span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co">#[8] "Percent of adults who report consuming fruit less than one time daily"                                                                                                                                                                                </span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co">#[9] "Percent of adults who report consuming vegetables less than one time daily" </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="visualisations" class="level2">
+<h2 class="anchored" data-anchor-id="visualisations">3.2 Visualisations:</h2>
+<section id="présentations-des-proportions-dactivités-physiques-selon-les-états" class="level3">
+<h3 class="anchored" data-anchor-id="présentations-des-proportions-dactivités-physiques-selon-les-états">3.2.1 Présentations des proportions d’activités physiques selon les États</h3>
+<p>Dans la catégorie “Aucune activité physique”</p>
+<p><img src="travail_session/figures/finale/graph_0pa.png" class="img-fluid"></p>
+<p>Dans la catégorie 150 ou + min/semaine</p>
+<p><img src="travail_session/figures/finale/graph_150min_pa.png" class="img-fluid"></p>
+<p><img src="travail_session/figures/finale/graph_300_min.png" class="img-fluid"></p>
+<p><img src="travail_session/figures/finale/graph_muscu.png" class="img-fluid"></p>
+</section>
+<section id="présentations-des-données-sur-léducation" class="level3">
+<h3 class="anchored" data-anchor-id="présentations-des-données-sur-léducation">3.2.2 Présentations des données sur l’éducation:</h3>
+<p><img src="travail_session/figures/finale/graph_edu.png" class="img-fluid"></p>
+</section>
+</section>
+</section>
+<section id="résultats" class="level1">
+<h1>4. Résultats:</h1>
+<section id="résultats-ggraphiques" class="level2">
+<h2 class="anchored" data-anchor-id="résultats-ggraphiques">4.1 Résultats ggraphiques:</h2>
+<p>Graphique qui illustre les 10 États ayant les plus haut de diplomes au sein de leur population respective comparer au pourcentage moyens de l’État selon les 4 catégories d’activité physique.</p>
+<p><img src="travail_session/figures/finale/super_graph1.png" width="1056" height="600"></p>
+</section>
+<section id="résultats-statistiques" class="level2">
+<h2 class="anchored" data-anchor-id="résultats-statistiques">4.2 Résultats statistiques:</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Analyse de régression du niveau d'activité physique en fonction du niveau d'éducation</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">lm</span>(diplomes_universitaires <span class="sc">~</span> ordre_activite <span class="sc">+</span> state_median_income <span class="sc">+</span> uni_au_25km <span class="sc">+</span> uni_au_50km <span class="sc">+</span> uni_au_75km <span class="sc">+</span> uni_au_100km, </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> pa_education)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Résumé de la régression</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = diplomes_universitaires ~ ordre_activite + state_median_income + 
+    uni_au_25km + uni_au_50km + uni_au_75km + uni_au_100km, data = pa_education)
+
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-0.132119 -0.029491 -0.008042  0.039953  0.184580 
+
+Coefficients:
+                      Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)          7.006e-02  5.672e-03  12.351  &lt; 2e-16 ***
+ordre_activite      -2.737e-05  7.510e-04  -0.036   0.9709    
+state_median_income  3.502e-06  9.286e-08  37.709  &lt; 2e-16 ***
+uni_au_25km          7.087e-04  3.707e-05  19.120  &lt; 2e-16 ***
+uni_au_50km         -8.921e-05  5.213e-05  -1.711   0.0871 .  
+uni_au_75km         -3.592e-04  4.506e-05  -7.971 1.92e-15 ***
+uni_au_100km         1.725e-04  1.534e-05  11.243  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.06045 on 5174 degrees of freedom
+  (296 observations effacées parce que manquantes)
+Multiple R-squared:  0.3594,    Adjusted R-squared:  0.3587 
+F-statistic: 483.9 on 6 and 5174 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>L’intercept est de 0.2666. Cela signifie que lorsque toutes les autres variables sont nulles, la proportion de diplômés universitaires est estimée à 0.2666.</p>
+<p>ordre_activite : Le coefficient est -2.357e-05, mais il n’est pas significatif (p-value = 0.978). Cela suggère qu’il n’y a pas de relation significative entre le niveau d’activité physique et la proportion de diplômés universitaires.</p>
+<p>uni_au_25km, uni_au_50km, uni_au_75km, uni_au_100km : Ces variables représentent le nombre d’universités à différentes distances de l’État. Par exemple, pour uni_au_25km, chaque augmentation d’une unité dans le nombre d’universités dans un rayon de 25 km est associée à une augmentation de 0.0004545 dans la proportion de diplômés universitaires. Residuals :</p>
+<p>Les résidus (erreurs de prédiction) semblent être distribués symétriquement autour de zéro, ce qui indique que le modèle de régression est approprié.</p>
+</section>
+</section>
+<section id="inférence" class="level1">
+<h1>5. Inférence:</h1>
+<ol type="1">
+<li><p><strong>Impact de l’activité physique sur l’éducation</strong> : L’analyse de régression a montré qu’il n’y avait pas de relation significative entre les différents niveaux d’activité physique (aucune activité physique, 150+ min/sem, 300+ min/sem, renforcement musculaire) et le taux de diplômés universitaires. Cela suggère que, du moins dans le contexte de cette étude, l’activité physique n’a pas d’effet direct sur le niveau d’éducation des adultes aux États-Unis.</p></li>
+<li><p><strong>Autres facteurs influençant l’éducation</strong> : Les résultats indiquent que la proximité des universités (uni_au_25km, uni_au_50km, uni_au_75km, uni_au_100km) est significativement associée au taux de diplômés universitaires. Cela suggère que <u>d’autres facteurs</u>, tels que l’accès à l’éducation supérieure, peuvent jouer un rôle plus important dans la détermination du niveau d’éducation.</p></li>
+<li><p><strong>Limitations de l’étude</strong> : Il est important de noter que cette analyse repose sur des données agrégées au niveau de l’État, ce qui <u>peut masquer les variations individuelles et locales</u>. De plus, d’autres facteurs non pris en compte dans cette étude pourraient influencer le lien entre l’activité physique et le niveau d’éducation, tels que les différences culturelles, socio-économiques et démographiques entre les États.</p></li>
+</ol>
+<p>En conclusion, bien que l’analyse n’ait pas trouvé de lien direct entre l’activité physique et le niveau d’éducation, elle souligne l’importance d’examiner attentivement les différents facteurs qui peuvent influencer l’éducation et la santé des individus. Ces résultats pourraient servir de base pour des études plus approfondies sur les déterminants de l’éducation et de la santé aux États-Unis.</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

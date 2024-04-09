@@ -1,0 +1,262 @@
+---
+title: "Présentation Projet"
+author: "Camilien Rousseau"
+format: html
+editor: visual
+zoom: 80
+toc: true
+---
+
+1 - problématique de base, 2 - question de recherche, 3 - données utilisées et pourquoi elles sont intéressantes pour répondre à la question de recherche, 4 - la présentation des résultats préliminaires ou finaux (les vôtres), 5 - implication des résultats pour le vrai monde (ce qu’on appelle communément en science, l’inférence)
+
+# Librairies & Packages:
+
+Librairies et packages utilisés:
+
+```{r}
+# Librairies & Packages: 
+#install.packages("tidyverse") 
+suppressMessages(library(tidyverse)) 
+#install.packages("ggplot2") 
+library(ggplot2)
+#install.packages("stats")
+library(stats)
+#install.packages("viridis")
+library(viridis)
+```
+
+Code secret:
+
+```{r eval=TRUE, echo=FALSE}
+# importation des données sur l'activité physique:
+Physical_act <- read.csv("C:/Users/rouss/OneDrive - Universite de Montreal/fas_1001_rousseau/Nutrition__Physical_Activity__and_Obesity_-_Behavioral_Risk_Factor_Surveillance_System.csv")  
+
+View(Physical_act)  
+
+# importation des données sur l'éducation:
+Education <- readxl::read_xlsx("C:/Users/rouss/OneDrive - Universite de Montreal/fas_1001_rousseau/State - Income, Education Level by State.xlsx")  
+
+View(Education) 
+
+# Nettoyage de données de la banque de pour l'activité physique: 
+
+questions_activite_physique <- c(
+  "Percent of adults who engage in no leisure-time physical activity",
+  "Percent of adults who achieve at least 150 minutes a week of moderate-intensity aerobic physical activity or 75 minutes a week of vigorous-intensity aerobic activity (or an equivalent combination)",
+  "Percent of adults who achieve at least 300 minutes a week of moderate-intensity aerobic physical activity or 150 minutes a week of vigorous-intensity aerobic activity (or an equivalent combination)",
+  "Percent of adults who achieve at least 150 minutes a week of moderate-intensity aerobic physical activity or 75 minutes a week of vigorous-intensity aerobic physical activity and engage in muscle-strengthening activities on 2 or more days a week"
+)
+
+noms_questions <- data.frame(
+  Question = questions_activite_physique,
+  niveau_activite = c(
+    "Aucune activité physique",
+    "150+ min/sem",
+    "300+ min/sem",
+    "renforcement musculaire"
+  ),
+  ordre_activite = c(1, 2, 3, 4)
+)
+
+physical_act_clean <- Physical_act %>%  
+  filter(YearStart %in% c(2017)) %>%   
+  select(LocationDesc, Question, Data_Value, Stratification1, Sample_Size) %>%
+  filter(Question %in% questions_activite_physique) %>%
+  left_join(noms_questions, by = "Question") %>%
+  select(-Question) %>% 
+  rename(state = LocationDesc) %>% 
+  rename(proportion_activite = Data_Value) %>% 
+  drop_na()
+
+
+
+
+# Nettoyage de la banque de données d'éducation: 
+education_clean <- Education %>%    
+  select(-region, -state_income_percentile) %>% 
+  rename(diplomes_universitaires = state_proportion_with_bachelors_or_higher,
+         uni_au_25km = total_colleges_within_25km_of_state_counties,
+         uni_au_50km = total_colleges_within_50km_of_state_counties,
+         uni_au_75km = total_colleges_within_75km_of_state_counties,
+         uni_au_100km = total_colleges_within_100km_of_state_counties)
+
+
+# Groupement des bases de données:
+# Joindre la base de données sur l'éducation et les universités :
+pa_education <- merge(physical_act_clean, education_clean, by = "state", all.x = TRUE)%>%
+  mutate(
+    ordre_activite_1 = as.integer(niveau_activite == "Aucune activité physique"),
+    ordre_activite_2 = as.integer(niveau_activite == "150+ min/sem"),
+    ordre_activite_3 = as.integer(niveau_activite == "300+ min/sem"),
+    ordre_activite_4 = as.integer(niveau_activite == "renforcement musculaire"),
+         replace(diplomes_universitaires, is.na(diplomes_universitaires), 0)
+  )
+# Calculer les moyennes par État
+mean_data <- pa_education %>%
+  group_by(state, ordre_activite) %>%
+  summarize(mean_proportion_diplomes = mean(diplomes_universitaires),
+            proportion_activite = first(proportion_activite))
+
+# Identifier les États avec les taux les plus élevés dans chaque catégorie
+top_states <- mean_data %>%
+  group_by(ordre_activite) %>%
+  top_n(10, mean_proportion_diplomes) %>%
+  arrange(ordre_activite, desc(mean_proportion_diplomes))
+
+#View(top_states)
+
+# Convertir ordre_activite en facteur pour maintenir l'ordre des niveaux
+top_states_sorted <- top_states %>%
+  arrange(ordre_activite, mean_proportion_diplomes) 
+
+
+```
+
+# 1 - Problématique de base
+
+Le sujet a été étudié de façon abondante chez les enfants (Álvarez-Bueno et al. 2017) , mais moins chez les adultes, surtout au niveau académique universitaire. u
+
+"Comment l'engagement dans une activité physique régulière chez les adultes peut-il influencer leur niveau d'éducation, et quelles implications cela pourrait-il avoir sur la santé publique et les politiques éducatives ?"
+
+Cette problématique soulève des questions importantes sur la relation entre le mode de vie actif et les résultats académique dans notre cas, mais également sur les performances professionelles, ainsi que sur les moyens par lesquels les politiques de promotion de la santé et de l'éducation pourraient être améliorées pour favoriser des résultats positifs dans ces domaines.
+
+# 2- Question de recherche
+
+Question de recherche:
+
+Quel est l'impact de l'activité physique le niveau d'éducation dans la population des États-Unis?
+
+Voici plusieurs raisons qui motivent se choix de sujet:
+
+1.  **Intérêt personnel** : Étant moi même un étudiant universitaire qui fait beaucoup d'activité physique.
+
+2.  **Impact potentiel** : Comprendre la relation, peut avoir un impact important sur la promotion de modes de vie sains et l'amélioration des performances académiques et sportives.
+
+3.  **Portée large** : En examinant l'impact de l'activité physique sur la santé et le niveau d'éducation dans la population des États-Unis, cette étude pourrait avoir des implications pour la santé publique à l'échelle nationale.
+
+4.  **Compréhension globale** : Cette question permet d'explorer comment l'activité physique peut influencer à la fois la santé et le niveau d'éducation, offrant ainsi une vision globale de son importance pour le bien-être des individus.
+
+5.  **Politiques publiques** : Les résultats de cette recherche pourraient être utilisés pour informer les politiques publiques visant à promouvoir l'activité physique et à améliorer la santé et le niveau d'éducation de la population.
+
+6.  **Comparaison entre groupes** : Nous pourrions également envisager de comparer les effets de l'activité physique sur la santé et le niveau d'éducation entre différents groupes démographiques, ce qui pourrait mettre en lumière des disparités et des facteurs de risque potentiels
+
+# 3 - Données:
+
+#### Données sur l'activité physique:
+
+Les données sur l'activité physique proviennent du "Behavioral Risk Factor Surveillance System" (BRFSS), un système de surveillance des facteurs de risque comportementaux géré par les Centers for Disease Control and Prevention (CDC) aux États-Unis. Le BRFSS est une enquête téléphonique nationale menée chaque année auprès de milliers d'adultes américains. Les questions sur l'activité physique dans le BRFSS sont conçues pour évaluer la fréquence et la durée de différentes formes d'activité physique pratiquée par les adultes
+
+#### Données sur l'éducation
+
+Les autres données proviennent du site du gouvernement américain data.gov et sont des données agrégées au niveau de l'État, fournissant des informations sur la proportion d'adultes dans chaque État ayant obtenu au moins un baccalauréat. Ces données peuvent provenir d'enquêtes nationales sur l'éducation ou d'autres bases de données gouvernementales ou institutionnelles qui recueillent des données sur l'éducation aux États-Unis.
+
+Les données sélectionnées pour répondre à la question de recherche sur l'impact de l'activité physique sur le niveau d'éducation aux États-Unis sont pertinentes, car elles fournissent des informations détaillées sur la pratique de l'activité physique et les niveaux d'éducation dans différents États.
+
+Les données sur l'activité physique sont basées sur des indicateurs clés tels que le pourcentage d'adultes pratiquant une activité physique régulière, y compris des activités aérobiques et de renforcement musculaire, tandis que les données sur l'éducation fournissent des informations sur la proportion d'adultes détenant au moins un baccalauréat.
+
+## 3.1 Nettoyage:
+
+Le processus de nettoyage des données a consisté en plusieurs étapes pour préparer les données à l'analyse :
+
+1.  **Sélection des variables pertinentes** : Les variables pertinentes pour l'analyse, telles que le pourcentage d'adultes pratiquant différentes activités physiques et les données sur l'éducation, ont été sélectionnées.
+
+2.  **Filtrage des données** : Les données ont été filtrées pour ne conserver que les informations relatives à l'année 2017, qui était l'année d'intérêt pour l'étude.
+
+3.  **Reformatage des données** : Les données ont été reformatées pour assurer leur cohérence et faciliter leur utilisation dans l'analyse. Par exemple, les données sur l'activité physique ont été reformatées pour inclure des catégories spécifiques d'activité physique, telles que "Aucune activité physique" ou "Renforcement musculaire".
+
+4.  **Traitement des données manquantes** : Les données manquantes ont été traitées de différentes manières en fonction du contexte. Dans certains cas, les lignes contenant des données manquantes ont été supprimées, tandis que dans d'autres cas, les valeurs manquantes ont été remplacées par des valeurs par défaut (par exemple, zéro) pour éviter les problèmes lors de l'analyse.
+
+5.  **Jointure des données** : Les données sur l'activité physique et l'éducation ont été jointes en utilisant la colonne "state" comme clé de jointure pour créer un ensemble de données combiné contenant des informations sur les deux variables.
+
+```{r}
+questions_activite_physique <- c(
+  "Percent of adults who engage in no leisure-time physical activity",
+  "Percent of adults who achieve at least 150 minutes a week of moderate-intensity aerobic physical activity or 75 minutes a week of vigorous-intensity aerobic activity (or an equivalent combination)",
+  "Percent of adults who achieve at least 300 minutes a week of moderate-intensity aerobic physical activity or 150 minutes a week of vigorous-intensity aerobic activity (or an equivalent combination)",
+  "Percent of adults who achieve at least 150 minutes a week of moderate-intensity aerobic physical activity or 75 minutes a week of vigorous-intensity aerobic physical activity and engage in muscle-strengthening activities on 2 or more days a week"
+)
+
+noms_questions <- data.frame(
+  Question = questions_activite_physique,
+  niveau_activite = c(
+    "Aucune activité physique",
+    "150+ min/sem",
+    "300+ min/sem",
+    "renforcement musculaire"
+  ),
+  ordre_activite = c(1, 2, 3, 4)
+)
+```
+
+Exemple des questions et de l'abondance de données:
+
+```{r}
+#unique(Physical_act$Question)
+#[1] "Percent of adults who engage in no leisure-time physical activity"                                                                                                                                                                                    
+#[2] "Percent of adults aged 18 years and older who have obesity"                                                                                                                                                                                           
+#[3] "Percent of adults aged 18 years and older who have an overweight classification"                                                                                                                                                                      
+#[4] "Percent of adults who achieve at least 300 minutes a week of moderate-intensity aerobic physical activity or 150 minutes a week of vigorous-intensity aerobic activity (or an equivalent combination)"                                                
+#[5] "Percent of adults who achieve at least 150 minutes a week of moderate-intensity aerobic physical activity or 75 minutes a week of vigorous-intensity aerobic physical activity and engage in muscle-strengthening activities on 2 or more days a week"
+#[6] "Percent of adults who achieve at least 150 minutes a week of moderate-intensity aerobic physical activity or 75 minutes a week of vigorous-intensity aerobic activity (or an equivalent combination)"                                                 
+#[7] "Percent of adults who engage in muscle-strengthening activities on 2 or more days a week"                                                                                                                                                             
+#[8] "Percent of adults who report consuming fruit less than one time daily"                                                                                                                                                                                
+#[9] "Percent of adults who report consuming vegetables less than one time daily" 
+```
+
+## 3.2 Visualisations:
+
+### 3.2.1 Présentations des proportions d'activités physiques selon les États
+
+Dans la catégorie "Aucune activité physique"
+
+![](travail_session/figures/finale/graph_0pa.png)
+
+Dans la catégorie 150 ou + min/semaine
+
+![](travail_session/figures/finale/graph_150min_pa.png)
+
+![](travail_session/figures/finale/graph_300_min.png)
+
+![](travail_session/figures/finale/graph_muscu.png)
+
+### 3.2.2 Présentations des données sur l'éducation:
+
+![](travail_session/figures/finale/graph_edu.png)
+
+# 4. Résultats:
+
+## 4.1 Résultats ggraphiques:
+
+Graphique qui illustre les 10 États ayant les plus haut de diplomes au sein de leur population respective comparer au pourcentage moyens de l'État selon les 4 catégories d'activité physique.
+
+![](travail_session/figures/finale/super_graph1.png){width="1056" height="600"}
+
+## 4.2 Résultats statistiques:
+
+```{r}
+# Analyse de régression du niveau d'activité physique en fonction du niveau d'éducation
+model <- lm(diplomes_universitaires ~ ordre_activite + state_median_income + uni_au_25km + uni_au_50km + uni_au_75km + uni_au_100km, 
+            data = pa_education)
+
+# Résumé de la régression
+summary(model)
+
+```
+
+L'intercept est de 0.2666. Cela signifie que lorsque toutes les autres variables sont nulles, la proportion de diplômés universitaires est estimée à 0.2666.
+
+ordre_activite : Le coefficient est -2.357e-05, mais il n'est pas significatif (p-value = 0.978). Cela suggère qu'il n'y a pas de relation significative entre le niveau d'activité physique et la proportion de diplômés universitaires.
+
+uni_au_25km, uni_au_50km, uni_au_75km, uni_au_100km : Ces variables représentent le nombre d'universités à différentes distances de l'État. Par exemple, pour uni_au_25km, chaque augmentation d'une unité dans le nombre d'universités dans un rayon de 25 km est associée à une augmentation de 0.0004545 dans la proportion de diplômés universitaires. Residuals :
+
+Les résidus (erreurs de prédiction) semblent être distribués symétriquement autour de zéro, ce qui indique que le modèle de régression est approprié.
+
+# 5. Inférence:
+
+1.  **Impact de l'activité physique sur l'éducation** : L'analyse de régression a montré qu'il n'y avait pas de relation significative entre les différents niveaux d'activité physique (aucune activité physique, 150+ min/sem, 300+ min/sem, renforcement musculaire) et le taux de diplômés universitaires. Cela suggère que, du moins dans le contexte de cette étude, l'activité physique n'a pas d'effet direct sur le niveau d'éducation des adultes aux États-Unis.
+
+2.  **Autres facteurs influençant l'éducation** : Les résultats indiquent que la proximité des universités (uni_au_25km, uni_au_50km, uni_au_75km, uni_au_100km) est significativement associée au taux de diplômés universitaires. Cela suggère que [d'autres facteurs]{.underline}, tels que l'accès à l'éducation supérieure, peuvent jouer un rôle plus important dans la détermination du niveau d'éducation.
+
+3.  **Limitations de l'étude** : Il est important de noter que cette analyse repose sur des données agrégées au niveau de l'État, ce qui [peut masquer les variations individuelles et locales]{.underline}. De plus, d'autres facteurs non pris en compte dans cette étude pourraient influencer le lien entre l'activité physique et le niveau d'éducation, tels que les différences culturelles, socio-économiques et démographiques entre les États.
+
+En conclusion, bien que l'analyse n'ait pas trouvé de lien direct entre l'activité physique et le niveau d'éducation, elle souligne l'importance d'examiner attentivement les différents facteurs qui peuvent influencer l'éducation et la santé des individus. Ces résultats pourraient servir de base pour des études plus approfondies sur les déterminants de l'éducation et de la santé aux États-Unis.
