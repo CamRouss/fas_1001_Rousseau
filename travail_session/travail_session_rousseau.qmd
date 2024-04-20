@@ -47,7 +47,148 @@ les variables qui nous intréssent vont comme suit: L'année de début de l'étu
 
 Une autre partie des données provient du département d'éducation du gouvernement des États-Unis et donné en open source. Les données utilisées comprennent plusieurs variables importantes. La variable "state" représente l'état dans lequel les données ont été collectées, fournissant ainsi des informations sur la région étudiée. La variable "region" fournit des détails supplémentaires sur la région géographique à laquelle appartient l'état. La variable "state_median_income" indique le revenu médian de l'état, offrant ainsi un aperçu de la situation économique générale de la région. La variable "state_income_percentile" indique le percentile du revenu de l'état par rapport aux autres états, ce qui permet de comparer le niveau de revenu de l'état avec celui des autres régions. La variable "state_proportion_with_bachelors_or_higher" représente la proportion de personnes dans l'état ayant un diplôme de bachelier ou un niveau d'éducation plus élevé, ce qui peut être un indicateur de la qualité de l'éducation dans la région. Les variables "total_colleges_within_25km_of_state_counties", "total_colleges_within_50km_of_state_counties", "total_colleges_within_75km_of_state_counties" et "total_colleges_within_100km_of_state_counties" indiquent le nombre total de collèges situés à différentes distances des comtés de l'état, ce qui peut être utile pour évaluer l'accessibilité à l'éducation supérieure dans la région. Ces variables sont cruciales pour comprendre la relation entre le niveau de revenu, le niveau d'éducation et l'accessibilité à l'éducation supérieure dans chaque état.
 
-Une troisième base de données provenant de la même source que la deuxième nous offre des données sur la démographie de la population américaine, selon les États ainsi que sur trois années (2017, 2018, 2019), ce qui nous indique comment filtrer ou nettoyer nos donner selon les dates, questions que nos analyses futures soient pertinentes et précises.
+Finalement nous utiliserons à des fins visuelles, des données géographiques des États-Unis, qui elle proviennent de census.gov (United States Census Bureau) et qui vont nous permettrent de rendre plus compréhensible et évident notre visualisation de données. Nous allons utiliser les données de 2017 pour avoir la même date que pour les deux bases de données précédentes.
+
+```{r}
+states_geo <- st_read(dsn = "C:/Users/rouss/OneDrive - Universite de Montreal/Documents/R_Cam/Fas_1003/data/states_geo18", # dossier
+                    layer = "cb_2018_us_state_500k") 
+
+
+states_geo_clean <- states_geo_clean <- subset(states_geo, 
+                                               !(NAME %in% c("American Samoa",
+                                                             "Commonwealth of the Northern Mariana Islands",
+                                                             "Puerto Rico",
+                                                             "United States Virgin Islands",
+                                                             "Guam"))) %>%
+  select(NAME, STUSPS, geometry) %>% 
+  rename("state" = "NAME")
+
+
+
+
+
+labels <- data.frame(
+  state = unique(states_geo_clean$state),
+  STUSPS = unique(states_geo_clean$STUSPS),
+  center = st_centroid(states_geo_clean$geometry)
+)
+
+
+labels$label_x <- st_coordinates(labels$geometry)[, "X"]
+labels$label_y <- st_coordinates(labels$geometry)[, "Y"]
+
+
+# Liste des abbréviations des États à retirer
+northeast_abbreviations <- c("NH", "VT", "MA", "RI", "CT", "DC", "DE")
+# Filtre pour exclure certains États du Nord-Est
+labels <- labels %>%
+  mutate(STUSPS = ifelse(STUSPS %in% northeast_abbreviations, " ", STUSPS))
+
+
+
+# Afficher la carte des États-Unis 
+graph_carte <- ggplot(data = states_geo_clean) +
+  geom_sf(aes(fill = state), color = "white", size = 0.2) +
+  geom_text(data = labels, aes(label = STUSPS), x = labels$label_x, y = labels$label_y, size = 2, color = "black") +
+  labs(title = "États des États-Unis") +
+  scale_fill_discrete(name = "") +
+  theme_void() +
+  theme(legend.position = "none") +
+  coord_sf(xlim = c(-180, -50), ylim = c(20, 72))
+
+
+graph_carte <- graph_carte +
+  annotate("text",
+           x = -68,
+           y = 43.5,
+           label = "NH",
+           size = 2,
+           color = "black") +
+  annotate("text",
+           x = -72.6,
+           y = 46.1,
+           label = "VT",
+           size = 2,
+           color = "black") +
+  annotate("text",
+           x = -69.9,
+           y = 42.4,
+           label = "MA",
+           size = 2,
+           color = "black") +
+  annotate("text",
+           x = -70.3, 
+           y = 40.8,
+           label = "RI",
+           size = 2,
+           color = "black") +
+  annotate("text",
+           x = -72.3,
+           y = 40.3,
+           label = "CT",
+           size = 2,
+           color = "black") +
+  annotate("text",
+           x = -73.3,
+           y = 36.5,
+           label = "DC",
+           size = 2,
+           color = "black") +
+  annotate("text",
+           x = -74.2,
+           y = 38.7,
+           label = "DE",
+           size = 2,
+           color = "black") +
+  annotate("segment",
+           x = -68.7, xend = -71,
+           y = 43.5, yend = 43.1,
+           color = "black") +
+  annotate("segment",
+           x = -72.7,xend = -72.7,
+           y = 45.9, yend = 44.6,
+           color = "black") +
+  annotate("segment",
+           x = -70, xend = -71.3,
+           y = 42.4, yend = 42.4,
+           color = "black") +
+  annotate("segment",
+           x = -70.3, xend = -71.5,
+           y = 40.8, yend = 41.5,
+           color = "black") +
+  annotate("segment",
+           x = -72.3, xend = -72.6,
+           y = 40.3, yend = 41.4,
+           color = "black") +
+  annotate("segment",
+           x = -73.9, xend = -77.1,
+           y = 36.9, yend = 38.9,
+           color = "black") +
+  annotate("segment",
+           x = -74.6, xend = -75.3,
+           y = 38.7, yend = 38.7,
+           color = "black")
+           
+  
+graph_carte
+
+#Code pour enregistrer le graphique
+dir.create("figures")
+save(graph_carte, file = "figures/graph_carte.Rda")
+
+ggsave(graph_carte, 
+       filename = "figures/finale/graph_carte.png", 
+       dpi = 320,
+       bg = "white",
+       units = "cm",
+       height = 16,
+       width = 26)
+
+```
+
+#### Importation des données
+
+Importation des deux autres bases de données:
 
 ```{r}
 # importation des données sur l'activité physique:
@@ -56,9 +197,9 @@ Physical_act <- read.csv("C:/Users/rouss/OneDrive - Universite de Montreal/fas_1
 View(Physical_act)  
 
 # importation des données sur l'éducation:
-Education <- readxl::read_xlsx("C:/Users/rouss/OneDrive - Universite de Montreal/fas_1001_rousseau/State - Income, Education Level by State.xlsx")  
-
-View(Education)  
+  Education <- readxl::read_xlsx("C:/Users/rouss/OneDrive - Universite de Montreal/fas_1001_rousseau/State - Income, Education Level by State.xlsx")  
+  
+  View(Education)  
 ```
 
 #### 
@@ -110,29 +251,173 @@ education_clean <- Education %>%
 
 
 # Groupement des bases de données:
-# Joindre la base de données sur l'éducation et les universités :
-pa_education <- merge(physical_act_clean, education_clean, by = "state", all.x = TRUE)%>%
+# Opération de combinaison des trois bases de données
+pa_education_geo <- merge(physical_act_clean, education_clean, by = "state", all.x = TRUE) %>%
+  merge(states_geo_clean, by = "state", all.x = TRUE) %>%
   mutate(
     ordre_activite_1 = as.integer(niveau_activite == "Aucune activité physique"),
     ordre_activite_2 = as.integer(niveau_activite == "150+ min/sem"),
     ordre_activite_3 = as.integer(niveau_activite == "300+ min/sem"),
     ordre_activite_4 = as.integer(niveau_activite == "renforcement musculaire"),
-         replace(diplomes_universitaires, is.na(diplomes_universitaires), 0)
+    diplomes_universitaires = replace(diplomes_universitaires, is.na(diplomes_universitaires), 0)
   )
 
+# Création de 2 bases de données pour les deux extrêmes du niveau d'activité physique afin d'alléger l'analyse:
+# Base de données pour "Aucune activité physique"
+aucune_activite <- pa_education_geo %>%
+  filter(niveau_activite == "Aucune activité physique")
+
+# Base de données pour "renforcement musculaire"
+renforcement_musculaire <- pa_education_geo %>%
+  filter(niveau_activite == "renforcement musculaire")
 ```
 
 ### 2.3 Visualisation des différentes données:
 
 #### 2.3.1 Activité physique:
 
+Aucune activité physique
+
 ```{r}
+
+# Graphique pour "Aucune activité"
+graph_0ac <- ggplot() +
+  geom_sf(data = aucune_activite, 
+          aes(fill = proportion_activite, geometry = geometry), 
+          color = "black", size = .2) +
+  scale_fill_viridis_c(name = "Pöurcentage",
+                       breaks = c(0, 10, 20, 30, 40, 50, 60),
+                       guide = guide_colorbar(title.position = "top",
+                                              title.hjust = .5,
+                                              ticks = F,
+                                              nbin = 4,
+                                              barheight = .5,
+                                              barwidth = 10), 
+                        labels = scales::percent_format(scale = 1)) +
+  geom_text(data = labels, 
+            aes(label = STUSPS, 
+                x = st_coordinates(st_centroid(states_geo_clean$geometry))[, 1], 
+                y = st_coordinates(st_centroid(states_geo_clean$geometry))[, 2]), 
+            size = 2.5, color = "black") +
+  labs(title = "Pourcentage d'activité physique", 
+       subtitle =  "Aucune activité physique") +
+  coord_sf(xlim = c(-180, -50), ylim = c(20, 72)) + theme_void()+
+  theme(legend.position = "bottom",
+        plot.title = element_text(vjust = 1.5,
+                                  size = 18,
+                                  face = "bold",
+                                  color = "midnightblue"),
+        plot.subtitle = element_text(vjust = 3.5,
+                                     hjust = .02,
+                                     size = 8,
+                                     color = "midnightblue"),
+        plot.margin = margin(0,1,0,1,"cm"),
+        legend.title = element_text(size = 6,
+                                    color = "midnightblue"),
+        legend.text = element_text(color = "midnightblue"))
+
+#Afficher le graphique
+graph_0ac <- graph_0ac +
+  annotate("text",
+           x = -68,
+           y = 43.5,
+           label = "NH",
+           size = 2,
+           color = "black") +
+  annotate("text",
+           x = -72.6,
+           y = 46.1,
+           label = "VT",
+           size = 2,
+           color = "black") +
+  annotate("text",
+           x = -69.9,
+           y = 42.4,
+           label = "MA",
+           size = 2,
+           color = "black") +
+  annotate("text",
+           x = -70.3, 
+           y = 40.8,
+           label = "RI",
+           size = 2,
+           color = "black") +
+  annotate("text",
+           x = -72.3,
+           y = 40.3,
+           label = "CT",
+           size = 2,
+           color = "black") +
+  annotate("text",
+           x = -73.3,
+           y = 36.5,
+           label = "DC",
+           size = 2,
+           color = "black") +
+  annotate("text",
+           x = -74.2,
+           y = 38.7,
+           label = "DE",
+           size = 2,
+           color = "black") +
+  annotate("segment",
+           x = -68.7, xend = -71,
+           y = 43.5, yend = 43.1,
+           color = "black") +
+  annotate("segment",
+           x = -72.7,xend = -72.7,
+           y = 45.9, yend = 44.6,
+           color = "black") +
+  annotate("segment",
+           x = -70, xend = -71.3,
+           y = 42.4, yend = 42.4,
+           color = "black") +
+  annotate("segment",
+           x = -70.3, xend = -71.5,
+           y = 40.8, yend = 41.5,
+           color = "black") +
+  annotate("segment",
+           x = -72.3, xend = -72.6,
+           y = 40.3, yend = 41.4,
+           color = "black") +
+  annotate("segment",
+           x = -73.9, xend = -77.1,
+           y = 36.9, yend = 38.9,
+           color = "black") +
+  annotate("segment",
+           x = -74.6, xend = -75.3,
+           y = 38.7, yend = 38.7,
+           color = "black")
+
+graph_0ac
+
+save(graph_0ac, file = "figures/graph_0ac.Rda")
+
+ggsave(graph_0ac, 
+       filename = "figures/finale/graph_0ac.png", 
+       dpi = 320,
+       bg = "white",
+       units = "cm",
+       height = 16,
+       width = 26)
+
+#Moyenne
+moy_act0_us <- mean(aucune_activite$proportion_activite)
+
+moy_act0_us# = 27.51
+```
+
+##### 150 min/sem
+
+```{r}
+
 # Calculer les moyennes par État
-mean_data <- pa_education %>%
+mean_data <- pa_education_geo %>%
   group_by(state, ordre_activite) %>%
   summarize(mean_proportion_diplomes = mean(diplomes_universitaires),
             proportion_activite = first(proportion_activite))
 
+mean_data
 # Identifier les États avec les taux les plus élevés dans chaque catégorie
 top_states <- mean_data %>%
   group_by(ordre_activite) %>%
@@ -145,43 +430,6 @@ top_states <- mean_data %>%
 top_states_sorted <- top_states %>%
   arrange(ordre_activite, mean_proportion_diplomes) 
 
-```
-
-##### Aucune activité physique:
-
-!!!!!!refaire les titres:
-
-```{r}
-graph_0pa <- ggplot(subset(top_states_sorted, ordre_activite == 1), 
-                    aes(x = reorder(state, -proportion_activite), 
-                        y = proportion_activite)) +
-  geom_bar(stat = "identity", fill = "skyblue") +
-  scale_y_continuous(limits = c(0, 40),
-                     breaks = seq(0,40, by = 5))+
-  labs(title = "États avec Aucune activité physique",
-       x = "État", y = "Proportion d'activité physique") +
-  theme(panel.grid.major.x = element_blank(),
-        axis.text.x = element_text(angle = 45, hjust = 1),
-        axis.line = element_line(colour = "black")) +
-  theme_minimal()
-graph_0pa
-
-# enregistrement du graphique dans notre Rproj
-dir.create("figures")
-save(graph_0pa, file = "figures/graph_0pa.Rda")
-
-ggsave(graph_0pa, 
-       filename = "figures/finale/graph_0pa.png", 
-       dpi = 320,
-       bg = "white",#on mentionne blanc pcq 'theme_minimal()' le met transparent 
-       units = "cm",
-       height = 16,
-       width = 26)
-```
-
-##### 150 min/sem
-
-```{r}
 # Graphique pour "150+ min/sem"
 graph_150min_pa <- ggplot(subset(top_states_sorted, ordre_activite == 2), 
                           aes(x = reorder(state, -proportion_activite), 
@@ -243,76 +491,268 @@ ggsave(graph_300_min,
 
 ```{r}
 # Graphique pour "Renforcement musculaire"
-graph_muscu <- ggplot(subset(top_states_sorted, ordre_activite == 4), 
-                      aes(x = reorder(state, -proportion_activite), 
-                          y = proportion_activite)) +
-  geom_bar(stat = "identity", fill = "orange") +
-  scale_y_continuous(limits = c(0, 40),
-                     breaks = seq(0,40, by = 5))+
-  labs(title = "États avec Renforcement musculaire",
-       x = "État", y = "Proportion d'activité physique") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1),
-        axis.line = element_line(colour = "black"))+
-  theme_minimal()
+graph_rm <- ggplot() +
+  geom_sf(data = renforcement_musculaire, aes(fill = proportion_activite, geometry = geometry), color = "black", size = .2) +
+  scale_fill_viridis_c(name = "Pourcentage",
+                       breaks = c(0, 10, 20, 30, 40, 50, 60),
+                       guide = guide_colorbar(title.position = "top",
+                                              title.hjust = .5,
+                                              ticks = F,
+                                              nbin = 4,
+                                              barheight = .5,
+                                              barwidth = 10),
+                        labels = scales::percent_format(scale = 1)) +
+  geom_text(data = labels, 
+            aes(label = STUSPS, 
+                x = st_coordinates(st_centroid(states_geo_clean$geometry))[, 1], 
+                y = st_coordinates(st_centroid(states_geo_clean$geometry))[, 2]), 
+            size = 2.5, color = "black") +
+  labs(title = "Pourcentage d'activité physique",
+       subtitle = "- renforcement musculaire") +
+  coord_sf(xlim = c(-180, -50), ylim = c(20, 72)) +
+  theme_void()+
+  theme(legend.position = "bottom",
+        plot.title = element_text(vjust = 1.5,
+                                  size = 18,
+                                  face = "bold",
+                                  color = "midnightblue"),
+        plot.subtitle = element_text(vjust = 3.5,
+                                     hjust = .02,
+                                     size = 8,
+                                     color = "midnightblue"),
+        plot.margin = margin(0,1,0,1,"cm"),
+        legend.title = element_text(size = 6,
+                                    color = "midnightblue"),
+        legend.text = element_text(color = "midnightblue"))
 
-graph_muscu
+graph_rm <- graph_rm +
+  annotate("text",
+           x = -68,
+           y = 43.5,
+           label = "NH",
+           size = 2,
+           color = "black") +
+  annotate("text",
+           x = -72.6,
+           y = 46.1,
+           label = "VT",
+           size = 2,
+           color = "black") +
+  annotate("text",
+           x = -69.9,
+           y = 42.4,
+           label = "MA",
+           size = 2,
+           color = "black") +
+  annotate("text",
+           x = -70.3, 
+           y = 40.8,
+           label = "RI",
+           size = 2,
+           color = "black") +
+  annotate("text",
+           x = -72.3,
+           y = 40.3,
+           label = "CT",
+           size = 2,
+           color = "black") +
+  annotate("text",
+           x = -73.3,
+           y = 36.5,
+           label = "DC",
+           size = 2,
+           color = "black") +
+  annotate("text",
+           x = -74.2,
+           y = 38.7,
+           label = "DE",
+           size = 2,
+           color = "black") +
+  annotate("segment",
+           x = -68.7, xend = -71,
+           y = 43.5, yend = 43.1,
+           color = "black") +
+  annotate("segment",
+           x = -72.7,xend = -72.7,
+           y = 45.9, yend = 44.6,
+           color = "black") +
+  annotate("segment",
+           x = -70, xend = -71.3,
+           y = 42.4, yend = 42.4,
+           color = "black") +
+  annotate("segment",
+           x = -70.3, xend = -71.5,
+           y = 40.8, yend = 41.5,
+           color = "black") +
+  annotate("segment",
+           x = -72.3, xend = -72.6,
+           y = 40.3, yend = 41.4,
+           color = "black") +
+  annotate("segment",
+           x = -73.9, xend = -77.1,
+           y = 36.9, yend = 38.9,
+           color = "black") +
+  annotate("segment",
+           x = -74.6, xend = -75.3,
+           y = 38.7, yend = 38.7,
+           color = "black")
+graph_rm
 
-#Enregistrement du graphique
-save(graph_muscu, file = "figures/graph_muscu.Rda")
+#Code pour enregistrer le graphique: 
+save(graph_rm, file = "figures/graph_rm.Rda")
 
-ggsave(graph_muscu, 
-       filename = "figures/finale/graph_muscu.png", 
+ggsave(graph_rm, 
+       filename = "figures/finale/graph_rm.png", 
        dpi = 320,
        bg = "white",
        units = "cm",
        height = 16,
        width = 26)
+
+#moyenne:
+moy_actrenf_us <- mean(renforcement_musculaire$proportion_activite)
+
+moy_actrenf_us # = 19.9
 ```
 
-
 #### 2.3.2 Visualisation des proportion d'éducation:
+
 ```{r}
-mean_education <- pa_education %>%
-  filter(!is.na(diplomes_universitaires)) %>%
-  group_by(state) %>%
-  summarize(mean_diplomes_universitaires = mean(diplomes_universitaires))
 
-# Trier les États en fonction de la moyenne de diplomes_universitaires
-pa_education_sorted <- pa_education %>%
-  left_join(mean_education, by = "state") %>%
-  filter(!is.na(mean_diplomes_universitaires)) %>%
-  arrange(desc(mean_diplomes_universitaires))
+graph_educ <- ggplot() +
+  geom_sf(data = pa_education_geo,
+          aes(fill = diplomes_universitaires, geometry = geometry),
+          color = "black", size = .2) +
+  scale_fill_viridis_c(name = "Proportion",
+                       breaks = c(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+                       guide = guide_colorbar(title.position = "top",
+                                              title.hjust = .5,
+                                              ticks = F,
+                                              nbin = 4, 
+                                              barheight = .5,
+                                              barwidth = 10),
+                       option = "inferno",
+                       direction = -1,
+                       labels = scales::percent_format(scale = 1)) + 
+  geom_text(data = labels, 
+            aes(label = STUSPS, x = label_x, y = label_y), 
+            size = 2.5, color = "black") +
+  labs(title = "Proportion d'obtention de diplômes universitaires") +
+  coord_sf(xlim = c(-180, -50), ylim = c(20, 72)) + theme_void()+
+  theme(legend.position = "bottom",
+        plot.title = element_text(vjust = 1.5,
+                                  size = 18,
+                                  face = "bold",
+                                  color = "midnightblue"),
+        plot.margin = margin(0,1,0,1,"cm"),
+        legend.title = element_text(size = 6,
+                                    color = "midnightblue"),
+        legend.text = element_text(color = "midnightblue"))
 
-# Créer un graphique pour la proportion d'éducation par État
-graph_edu <- ggplot(pa_education_sorted, aes(x = reorder(state, mean_diplomes_universitaires), y = diplomes_universitaires)) +
-  geom_point(stat = "identity", fill = "skyblue") +
-  scale_y_continuous(limits = c(0, 0.6),
-                      breaks = seq(0, 0.6, by = 0.1))+
-  labs(title = "Proportion d'éducation par État",
-       x = "État", y = "Proportion d'éducation") +
-  theme( panel.grid.minor.y = element_blank(),
-         axis.text.x = element_text(angle = 45, hjust = 1),
-        axis.line = element_line(colour = "black")) +
-  theme_minimal() +
-  coord_flip()
 
-graph_edu
+graph_educ <- graph_educ +
+  annotate("text",
+           x = -68,
+           y = 43.5,
+           label = "NH",
+           size = 2,
+           color = "black") +
+  annotate("text",
+           x = -72.6,
+           y = 46.1,
+           label = "VT",
+           size = 2,
+           color = "black") +
+  annotate("text",
+           x = -69.9,
+           y = 42.4,
+           label = "MA",
+           size = 2,
+           color = "black") +
+  annotate("text",
+           x = -70.3, 
+           y = 40.8,
+           label = "RI",
+           size = 2,
+           color = "black") +
+  annotate("text",
+           x = -72.3,
+           y = 40.3,
+           label = "CT",
+           size = 2,
+           color = "black") +
+  annotate("text",
+           x = -73.3,
+           y = 36.5,
+           label = "DC",
+           size = 2,
+           color = "black") +
+  annotate("text",
+           x = -74.2,
+           y = 38.7,
+           label = "DE",
+           size = 2,
+           color = "black") +
+  annotate("segment",
+           x = -68, xend = -71,
+           y = 43.5, yend = 43.1,
+           color = "black") +
+  annotate("segment",
+           x = -72.7,xend = -72.7,
+           y = 45.9, yend = 44.6,
+           color = "black") +
+  annotate("segment",
+           x = -70, xend = -71.3,
+           y = 42.4, yend = 42.4,
+           color = "black") +
+  annotate("segment",
+           x = -70.3, xend = -71.5,
+           y = 40.8, yend = 41.5,
+           color = "black") +
+  annotate("segment",
+           x = -72.3, xend = -72.6,
+           y = 40.3, yend = 41.4,
+           color = "black") +
+  annotate("segment",
+           x = -73.9, xend = -77.1,
+           y = 36.9, yend = 38.9,
+           color = "black") +
+  annotate("segment",
+           x = -74.6, xend = -75.3,
+           y = 38.7, yend = 38.7,
+           color = "black")
 
-#Enregistrer le graphique: 
-save(graph_edu, file = "figures/graph_edu.Rda")
+graph_educ
 
-ggsave(graph_edu, 
-       filename = "figures/finale/graph_edu.png", 
+save(graph_educ, file = "figures/graph_educ.Rda")
+
+ggsave(graph_educ, 
+       filename = "figures/finale/graph_educ.png", 
        dpi = 320,
        bg = "white",
        units = "cm",
        height = 16,
        width = 26)
+
+moy_dip_us <- mean(pa_education_geo$diplomes_universitaires)
+
+moy_dip_us
 ```
 
 ## 3- Analyse par État:
 
 ```{r}
+mean_education <- pa_education_geo %>%
+  filter(!is.na(diplomes_universitaires)) %>%
+  group_by(state) %>%
+  summarize(mean_diplomes_universitaires = mean(diplomes_universitaires))
+
+# Trier les États en fonction de la moyenne de diplomes_universitaires
+pa_education_sorted <- pa_education_geo %>%
+  left_join(mean_education, by = "state") %>%
+  filter(!is.na(mean_diplomes_universitaires)) %>%
+  arrange(desc(mean_diplomes_universitaires))
+
 
 # Créer un graphique ggplot avec des facettes pour chaque niveau d'ordre_activite
 super_graph1 <- ggplot(top_states_sorted, aes(x = reorder(state, mean_proportion_diplomes), y = mean_proportion_diplomes, fill = proportion_activite)) +
@@ -348,23 +788,51 @@ ggsave(super_graph1,
        width = 26)
 ```
 
+#### Nuage de points: 
+
+```{r}
+renforcement_musculaire_grouped <- renforcement_musculaire %>%
+  group_by(state) %>%
+  summarize(mean_diplomes_universitaires = mean(diplomes_universitaires),
+            mean_proportion_activite = mean(proportion_activite, na.rm = TRUE))
+
+# Créer un nuage de points
+graph_nuage <- ggplot(data = renforcement_musculaire_grouped,
+                      aes(x = mean_diplomes_universitaires,
+                          y = mean_proportion_activite,
+                          )) +
+  geom_point() +
+  labs(title = "Nuage de points par État",
+       x = "Moyenne des diplômes universitaires",
+       y = "Moyenne de la proportion d'activité physique") +
+  theme_minimal()
+
+# Afficher le nuage de points
+print(graph_nuage)
+
+#Code pour enregistrer le graphique: 
+save(graph_nuage, file = "figures/graph_nuage.Rda")
+
+ggsave(graph_nuage, 
+       filename = "figures/finale/graph_nuage.png", 
+       dpi = 320,
+       bg = "white",
+       units = "cm",
+       height = 16,
+       width = 26)
+```
+
+En observant le nuage de points ici, l'on peut voir ce qui semble être une corrélation positive nulle avec des données abérantes, ce qui nous indique qu'il n'y aurait pas vraiment de relation entre les deux variables.
+
 #### Méthodes d'analyse
 
-Le but de l'analyse des données et d'essayer de voir s'il y a une relation entre le niveau d'activité physique et de santé et le niveau d'éducation de la population des États-Unis. Pour se faire nous allons procéder a des analyse statistiques afin de démontrer que notre hypothèse selon laquelle, les États américains où le niveau d'activité physique est le plus élevé auront également le plus haut niveau d'éducation en pourcentage.
-
-1.  **Analyse descriptives** : Pour décrire les caractéristiques de la population étudiée en termes d'activité physique, de santé et de niveau d'éducation, en utilisant des statistiques descriptives telles que les moyennes, les médianes et les écarts-types.
-
-2.  **Analyse de corrélation** : Pour examiner les relations entre l'activité physique, la santé et le niveau d'éducation, en utilisant des techniques telles que la corrélation de Pearson ou de Spearman pour mesurer les associations entre les variables.
-
-3.  **Régression linéaire** : Pour étudier comment l'activité physique influence la santé et le niveau d'éducation, en contrôlant les variables confondantes potentielles.
-
-Vos conseils sont le bienvenue sur quels types d'analyse je devrais faire!Analyse:
+Le but de l'analyse des données et d'essayer de voir s'il y a une relation entre le niveau d'activité physique et de santé et le niveau d'éducation de la population des États-Unis, puisque selon la visualisation faites précedement, il ne semble pas y en avoir. Pour se faire nous allons procéder a des analyse statistiques afin de démontrer que notre hypothèse selon laquelle, les États américains où le niveau d'activité physique est le plus élevé auront également le plus haut niveau d'éducation en pourcentage.
 
 #### 
 
 ```{r}
 
-summary_data <- pa_education %>%
+summary_data <- pa_education_geo %>%
    drop_na(diplomes_universitaires) %>%
   group_by(niveau_activite) %>%
   summarize(mean_proportion_diplomes = mean(diplomes_universitaires),
@@ -374,7 +842,7 @@ summary_data
 
 
 # Analyse de régression du niveau d'activité physique en fonction du niveau d'éducation
-model <- lm(diplomes_universitaires ~ ordre_activite + state_median_income + uni_au_25km + uni_au_50km + uni_au_75km + uni_au_100km, data = pa_education)
+model <- lm(diplomes_universitaires ~ ordre_activite + state_median_income + uni_au_25km + uni_au_50km + uni_au_75km + uni_au_100km, data = pa_education_geo)
 
 # Résumé de la régression
 summary(model)
@@ -383,14 +851,12 @@ summary(model)
 
 Coefficients :
 
-Intercept : L'intercept est de 0.2666. Cela signifie que lorsque toutes les autres variables sont nulles, la proportion de diplômés universitaires est estimée à 0.2666.
-ordre_activite : Le coefficient est -2.357e-05, mais il n'est pas significatif (p-value = 0.978). Cela suggère qu'il n'y a pas de relation significative entre le niveau d'activité physique et la proportion de diplômés universitaires.
-uni_au_25km, uni_au_50km, uni_au_75km, uni_au_100km : Ces variables représentent le nombre d'universités à différentes distances de l'État. Par exemple, pour uni_au_25km, chaque augmentation d'une unité dans le nombre d'universités dans un rayon de 25 km est associée à une augmentation de 0.0004545 dans la proportion de diplômés universitaires.
-Residuals :
+Intercept : L'intercept est de 0.07006 . Cela signifie que lorsque toutes les autres variables sont nulles, la proportion de diplômés universitaires est estimée à 0.07006. ordre_activite : Le coefficient est -2.737e-05, mais il n'est pas significatif (p-value = 0.978). Cela suggère qu'il n'y a pas de relation significative entre le niveau d'activité physique et la proportion de diplômés universitaires.
 
-Les résidus (erreurs de prédiction) semblent être distribués symétriquement autour de zéro, ce qui indique que le modèle de régression est approprié.
+Les autres variables telles que: uni_au_25km, uni_au_50km, uni_au_75km, uni_au_100km : Ces variables représentent le nombre d'universités à différentes distances de l'État. Par exemple, pour uni_au_25km, chaque augmentation d'une unité dans le nombre d'universités dans un rayon de 25 km est associée à une augmentation de 0.0007087 dans la proportion de diplômés universitaires.
 
 ### Conclusion:
+
 Nous avons analysé le lien entre le niveau d'activité physique et le niveau d'éducation dans la population des États-Unis. À partir des données, nous avons constaté que le niveau d'activité physique ne semble pas avoir une influence significative sur le niveau d'éducation. Les coefficients associés aux différents niveaux d'activité physique dans la régression multivariée étaient proches de zéro et non significatifs. Cela suggère qu'il n'y a pas de relation linéaire claire entre le niveau d'activité physique et le niveau d'éducation dans notre modèle.
 
 Il est important de noter que cette conclusion est basée sur les données et le modèle spécifique que nous avons utilisés. D'autres facteurs non pris en compte dans notre analyse pourraient jouer un rôle dans la relation entre l'activité physique et le niveau d'éducation. Par exemple, des facteurs socio-économiques, culturels ou environnementaux pourraient également influencer à la fois l'activité physique et le niveau d'éducation. Une analyse plus approfondie et l'utilisation de données supplémentaires pourraient être nécessaires pour mieux comprendre cette relation complexe.
